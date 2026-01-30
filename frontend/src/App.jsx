@@ -25,10 +25,8 @@ const auth = getAuth(firebaseApp);
 // API Configuration
 const getBaseUrl = () => {
   if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return 'http://localhost:8000';
-  }
-  return 'https://api.sprache.app';
+  // Default to local backend for development
+  return 'http://localhost:8000';
 };
 
 const API_BASE_URL = getBaseUrl();
