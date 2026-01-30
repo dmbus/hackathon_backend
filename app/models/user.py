@@ -3,6 +3,7 @@ from typing import Optional, List, Any
 from app.core.security import UserRole, ROLES_PERMISSIONS
 
 class UserCreate(BaseModel):
+    name: Optional[str] = None
     email: EmailStr
     password: str
 
@@ -18,8 +19,8 @@ class FirebaseTokenResponse(BaseModel):
     expiresIn: str
     localId: str
 
-class EmailRequest(BaseModel):
-    email: EmailStr
+class FirebaseLoginRequest(BaseModel):
+    idToken: str
 
 class UserInDB(BaseModel):
     id: str  # maps to _id

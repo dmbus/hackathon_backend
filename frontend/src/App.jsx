@@ -1,9 +1,37 @@
-import React, { useState } from 'react';
-import { Mail, Lock, User, ArrowRight, Eye, EyeOff, Sparkles } from 'lucide-react';
 import axios from 'axios';
+import { initializeApp } from "firebase/app";
+import {
+  getAuth,
+  GithubAuthProvider,
+  GoogleAuthProvider,
+  signInWithPopup
+} from "firebase/auth";
+import { ArrowRight, Eye, EyeOff, Lock, Mail, Sparkles, User } from 'lucide-react';
+import { useState } from 'react';
+
+// Firebase Configuration
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API || "AIzaSyCvMsgVadULWHUBTh8pJ-sj9nBKp4QPwek",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "sprache-f18c6.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "sprache-f18c6",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "sprache-f18c6.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_SENDER_ID || "116869406648",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:116869406648:web:b3fa6ac0920b29f55c394d"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
 
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.sprache.app';
+const getBaseUrl = () => {
+  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:8000';
+  }
+  return 'https://api.sprache.app';
+};
+
+const API_BASE_URL = getBaseUrl();
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -50,8 +78,8 @@ const InputField = ({ label, type, placeholder, icon: Icon, id, value, onChange 
 
   return (
     <div className="space-y-2 group">
-      <label 
-        htmlFor={id} 
+      <label
+        htmlFor={id}
         className="block text-sm font-semibold uppercase tracking-wider text-slate-400 pl-1"
       >
         {label}
@@ -88,7 +116,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -106,6 +134,39 @@ export default function App() {
     setSuccess('');
   };
 
+  const handleSocialLogin = async (providerName) => {
+    setIsLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      let provider;
+      if (providerName === 'google') {
+        provider = new GoogleAuthProvider();
+      } else if (providerName === 'github') {
+        provider = new GithubAuthProvider();
+      } else {
+        throw new Error('Unsupported provider');
+      }
+
+      const result = await signInWithPopup(auth, provider);
+      const idToken = await result.user.getIdToken();
+
+      // Send token to backend
+      const response = await api.post('/auth/firebase-login', { idToken });
+
+      console.log('Social Login Success:', response.data);
+      setSuccess('Successfully logged in with ' + providerName + '!');
+      localStorage.setItem('token', idToken);
+
+    } catch (err) {
+      console.error('Social Login Error:', err);
+      setError(err.response?.data?.detail || err.message || 'Social login failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -116,21 +177,34 @@ export default function App() {
       const endpoint = isLogin ? '/auth/login' : '/auth/register';
       const payload = {
         email: formData.email,
-        password: formData.password
+        password: formData.password,
+        ...(isLogin ? {} : { name: formData.name })
       };
-      
+
       const response = await api.post(endpoint, payload);
-      
+
       console.log('Success:', response.data);
       setSuccess(isLogin ? 'Successfully logged in!' : 'Account created successfully!');
-      
+
       // Store token
       localStorage.setItem('token', response.data.idToken);
-      
-      // Redirect or update UI state here
+
     } catch (err) {
       console.error('API Error:', err);
-      setError(err.response?.data?.detail || 'An unexpected error occurred. Please try again.');
+      let errorMsg = 'An unexpected error occurred. Please try again.';
+
+      if (err.response) {
+        // Server responded with a status code outside the 2xx range
+        errorMsg = err.response.data?.detail || `Error ${err.response.status}: ${err.response.statusText}`;
+      } else if (err.request) {
+        // Request was made but no response was received
+        errorMsg = `Cannot connect to server at ${API_BASE_URL}. Please check if the backend is running.`;
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        errorMsg = err.message;
+      }
+
+      setError(errorMsg);
     } finally {
       setIsLoading(false);
     }
@@ -145,12 +219,12 @@ export default function App() {
 
       <div className="w-full max-w-md relative z-10">
         <div className="bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden">
-          
+
           <div className="px-8 pt-10 pb-6 text-center">
             <div className="w-14 h-14 bg-indigo-50 rounded-xl flex items-center justify-center mx-auto mb-6 text-indigo-600 shadow-sm border border-indigo-100">
-               <Sparkles size={28} strokeWidth={2} />
+              <Sparkles size={28} strokeWidth={2} />
             </div>
-            
+
             <h1 className="text-3xl font-extrabold tracking-tight text-slate-800 mb-2">
               {isLogin ? 'Welcome Back' : 'Create Account'}
             </h1>
@@ -165,7 +239,7 @@ export default function App() {
                 {error}
               </div>
             )}
-            
+
             {success && (
               <div className="mb-6 p-4 bg-emerald-50 border border-emerald-100 text-emerald-600 rounded-xl text-sm font-medium animate-fade-in-down">
                 {success}
@@ -175,11 +249,11 @@ export default function App() {
             <form onSubmit={handleSubmit} className="space-y-5">
               {!isLogin && (
                 <div className="animate-fade-in-down">
-                  <InputField 
+                  <InputField
                     id="name"
-                    label="Full Name" 
-                    type="text" 
-                    placeholder="Jane Doe" 
+                    label="Full Name"
+                    type="text"
+                    placeholder="Jane Doe"
                     icon={User}
                     value={formData.name}
                     onChange={handleChange}
@@ -187,32 +261,32 @@ export default function App() {
                 </div>
               )}
 
-              <InputField 
+              <InputField
                 id="email"
-                label="Email Address" 
-                type="email" 
-                placeholder="hello@example.com" 
-                icon={Mail} 
+                label="Email Address"
+                type="email"
+                placeholder="hello@example.com"
+                icon={Mail}
                 value={formData.email}
                 onChange={handleChange}
               />
 
               <div className="space-y-1">
-                <InputField 
+                <InputField
                   id="password"
-                  label="Password" 
-                  type="password" 
-                  placeholder="••••••••" 
-                  icon={Lock} 
+                  label="Password"
+                  type="password"
+                  placeholder="••••••••"
+                  icon={Lock}
                   value={formData.password}
                   onChange={handleChange}
                 />
                 {isLogin && (
-                   <div className="flex justify-end pt-1">
-                     <a href="#" className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 transition-colors">
-                       Forgot password?
-                     </a>
-                   </div>
+                  <div className="flex justify-end pt-1">
+                    <a href="#" className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 transition-colors">
+                      Forgot password?
+                    </a>
+                  </div>
                 )}
               </div>
 
@@ -222,13 +296,13 @@ export default function App() {
                 className={`w-full py-4 px-6 mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-full shadow-lg shadow-indigo-500/30 transition-all duration-200 transform hover:scale-[1.02] active:scale-95 flex items-center justify-center space-x-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 ${isLoading ? 'cursor-wait' : ''}`}
               >
                 {isLoading ? (
-                   <span className="flex items-center gap-2">
-                     <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                     </svg>
-                     <span>Processing...</span>
-                   </span>
+                  <span className="flex items-center gap-2">
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Processing...</span>
+                  </span>
                 ) : (
                   <>
                     <span>{isLogin ? 'Sign In' : 'Get Started'}</span>
@@ -250,16 +324,16 @@ export default function App() {
             </div>
 
             <div className="flex space-x-4">
-              <SocialButton icon={GoogleIcon} label="Google" onClick={() => {}} />
-              <SocialButton icon={AppleIcon} label="Apple" onClick={() => {}} />
-              <SocialButton icon={GithubIcon} label="GitHub" onClick={() => {}} />
+              <SocialButton icon={GoogleIcon} label="Google" onClick={() => handleSocialLogin('google')} />
+              <SocialButton icon={AppleIcon} label="Apple" onClick={() => { }} />
+              <SocialButton icon={GithubIcon} label="GitHub" onClick={() => handleSocialLogin('github')} />
             </div>
           </div>
-          
+
           <div className="bg-slate-50 px-8 py-6 border-t border-slate-200 text-center">
             <p className="text-slate-600">
               {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
-              <button 
+              <button
                 onClick={toggleMode}
                 className="font-bold text-indigo-600 hover:text-indigo-700 transition-colors ml-1 focus:outline-none focus:underline"
               >
@@ -268,14 +342,14 @@ export default function App() {
             </p>
           </div>
         </div>
-        
+
         <div className="text-center mt-8">
           <p className="font-mono text-sm text-slate-400 opacity-80">
             Secure Authentication
           </p>
         </div>
       </div>
-      
+
       <style>{`
         @keyframes fadeInDown {
           from { opacity: 0; transform: translateY(-10px); }

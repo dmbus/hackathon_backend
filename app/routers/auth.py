@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Header, Body
-from app.models.user import UserCreate, UserLogin, FirebaseTokenResponse, EmailRequest
+from app.models.user import UserCreate, UserLogin, FirebaseTokenResponse, FirebaseLoginRequest
 from app.core.security import UserRole, ROLES_PERMISSIONS
 from app.services.firebase_auth import (
     sign_up_with_email, 
     sign_in_with_email, 
     send_password_reset_email,
-    send_email_verification
+    send_email_verification,
+    get_user_by_token
 )
 from app.db.mongodb import get_database
 from motor.motor_asyncio import AsyncIOMotorDatabase
@@ -23,6 +24,7 @@ async def register(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_data
     user_doc = {
         "_id": firebase_response["localId"],
         "email": firebase_response["email"],
+        "name": user.name,
         "role": UserRole.STUDENT_FREE,
         "permissions": ROLES_PERMISSIONS[UserRole.STUDENT_FREE],
         "created_at": datetime.utcnow()
@@ -40,6 +42,33 @@ async def register(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_data
 @router.post("/login", response_model=FirebaseTokenResponse)
 async def login(user: UserLogin):
     return await sign_in_with_email(user.email, user.password)
+
+@router.post("/firebase-login")
+async def firebase_login(request: FirebaseLoginRequest, db: AsyncIOMotorDatabase = Depends(get_database)):
+    # 1. Verify token with Firebase
+    firebase_user = await get_user_by_token(request.idToken)
+    
+    # 2. Check/Update MongoDB
+    user_id = firebase_user["localId"]
+    user_email = firebase_user.get("email")
+    user_name = firebase_user.get("displayName")
+    
+    # Check if user exists
+    existing_user = await db["users"].find_one({"_id": user_id})
+    
+    if not existing_user:
+        user_doc = {
+            "_id": user_id,
+            "email": user_email,
+            "name": user_name,
+            "role": UserRole.STUDENT_FREE,
+            "permissions": ROLES_PERMISSIONS[UserRole.STUDENT_FREE],
+            "created_at": datetime.utcnow()
+        }
+        await db["users"].insert_one(user_doc)
+        return {"message": "User created", "user": user_doc}
+    
+    return {"message": "Login successful", "user": existing_user}
 
 @router.post("/recover")
 async def request_password_reset(request: EmailRequest):
