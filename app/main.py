@@ -4,6 +4,7 @@ import time
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import auth, words, podcasts
 from app.db.mongodb import close_mongo_connection
+from app.core.config import settings
 
 app = FastAPI()
 
@@ -14,6 +15,17 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    # Strict-Transport-Security is crucial for HTTPS, but can be annoying on localhost without https.
+    # We can conditionally add it or just add it. Browsers usually ignore it on http://localhost.
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    return response
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
@@ -31,10 +43,10 @@ async def log_requests(request: Request, call_next):
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
+    allow_origins=settings.ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
