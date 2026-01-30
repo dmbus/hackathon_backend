@@ -6,6 +6,4 @@ services:
       - "8000:8000"
     env_file:
       - .env
-    volumes:
-      - ./app:/app/app # Mount source for hot reload during dev (optional but helpful)
     restart: always
