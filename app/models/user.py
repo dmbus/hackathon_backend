@@ -35,3 +35,6 @@ class UserResponse(BaseModel):
     role: str
     permissions: List[str]
 
+class EmailRequest(BaseModel):
+    email: EmailStr
+
