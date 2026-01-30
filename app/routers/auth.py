@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Header, Body
-from app.models.user import UserCreate, UserLogin, FirebaseTokenResponse, FirebaseLoginRequest, EmailRequest
+from app.models.user import UserCreate, UserLogin, FirebaseTokenResponse, FirebaseLoginRequest, EmailRequest, LoginResponse, UserResponse
 import logging
 from app.core.security import UserRole, ROLES_PERMISSIONS
 from app.services.firebase_auth import (
@@ -32,6 +32,9 @@ async def register(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_data
         "created_at": datetime.utcnow()
     }
     
+    if user.profile:
+        user_doc["profile"] = user.profile.dict()
+
     # Using upsert=True just in case of retry/race conditions, though Firebase should handle uniqueness
     await db["users"].update_one(
         {"_id": user_doc["_id"]}, 
@@ -41,9 +44,25 @@ async def register(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_data
     
     return firebase_response
 
-@router.post("/login", response_model=FirebaseTokenResponse)
-async def login(user: UserLogin):
-    return await sign_in_with_email(user.email, user.password)
+@router.post("/login", response_model=LoginResponse)
+async def login(user: UserLogin, db: AsyncIOMotorDatabase = Depends(get_database)):
+    token_response = await sign_in_with_email(user.email, user.password)
+    user_id = token_response["localId"]
+
+    user_doc = await db["users"].find_one({"_id": user_id})
+    if not user_doc:
+        raise HTTPException(status_code=404, detail="User not found in database")
+
+    return LoginResponse(
+        tokens=token_response,
+        user=UserResponse(
+            id=user_doc["_id"],
+            email=user_doc["email"],
+            role=user_doc.get("role", UserRole.STUDENT_FREE),
+            permissions=user_doc.get("permissions", ROLES_PERMISSIONS[UserRole.STUDENT_FREE]),
+            profile=user_doc.get("profile")
+        )
+    )
 
 @router.post("/firebase-login")
 async def firebase_login(request: FirebaseLoginRequest, db: AsyncIOMotorDatabase = Depends(get_database)):
