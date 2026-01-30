@@ -1,0 +1,93 @@
+name: Deploy to Hetzner
+
+on:
+    push:
+        branches:
+            - main
+
+env:
+    REGISTRY: ghcr.io
+    IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+    build-and-push:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Log in to the Container registry
+              uses: docker/login-action@v3
+              with:
+                  registry: ${{ env.REGISTRY }}
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Extract metadata (tags, labels) for Docker
+              id: meta
+              uses: docker/metadata-action@v5
+              with:
+                  images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+                  tags: |
+                      type=raw,value=latest
+                      type=sha
+
+            - name: Build and push Docker image
+              uses: docker/build-push-action@v5
+              with:
+                  context: .
+                  push: true
+                  tags: ${{ steps.meta.outputs.tags }}
+                  labels: ${{ steps.meta.outputs.labels }}
+
+    deploy:
+        needs: build-and-push
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Copy docker-compose via SCP
+              uses: appleboy/scp-action@master
+              with:
+                  host: ${{ secrets.HETZNER_HOST }}
+                  username: ${{ secrets.HETZNER_USER }}
+                  key: ${{ secrets.HETZNER_SSH_KEY }}
+                  source: "docker-compose.yml"
+                  target: "~/app"
+
+            - name: Deploy via SSH
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.HETZNER_HOST }}
+                  username: ${{ secrets.HETZNER_USER }}
+                  key: ${{ secrets.HETZNER_SSH_KEY }}
+                  script: |
+                      cd ~/app
+
+                      # Login to GHCR on the server (assumes user has rights or uses a PAT, better to use the GITHUB_TOKEN from the job if possible but that's hard to pass easily without exposing. 
+                      # Ideally the server should be authenticated. For simplicity, we assume the image is public or the server has `docker login` already configured/we pass the credentials.)
+                      # A common safe way is to pass the token:
+                      echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+                      # Export vars
+                      export IMAGE_NAME=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+                      # Create/Update .env file
+                      echo "FIREBASE_API=${{ secrets.FIREBASE_API }}" > .env
+                      echo "MONGO_ADDRESS=${{ secrets.MONGO_ADDRESS }}" >> .env
+                      echo "MONGO_USER=${{ secrets.MONGO_USER }}" >> .env
+                      echo "MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}" >> .env
+                      echo "MONGO_CLUSTER=${{ secrets.MONGO_CLUSTER }}" >> .env
+
+                      # Pull and Restart
+                      docker-compose pull
+                      docker-compose up -d
+
+                      # Cleanup login
+                      docker logout ghcr.io
