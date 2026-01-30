@@ -11,6 +11,16 @@ services:
       - default
       - nginx-proxy
 
+  frontend:
+    build: ./frontend
+    image: ${FRONTEND_IMAGE_NAME:-frontend}
+    expose:
+      - "80"
+    restart: always
+    networks:
+      - default
+      - nginx-proxy
+
 networks:
   nginx-proxy:
     external: true
