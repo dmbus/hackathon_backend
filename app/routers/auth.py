@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Header, Body
-from app.models.user import UserCreate, UserLogin, FirebaseTokenResponse, FirebaseLoginRequest
+from app.models.user import UserCreate, UserLogin, FirebaseTokenResponse, FirebaseLoginRequest, EmailRequest
+import logging
 from app.core.security import UserRole, ROLES_PERMISSIONS
 from app.services.firebase_auth import (
     sign_up_with_email, 
@@ -13,6 +14,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from datetime import datetime
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 @router.post("/register", response_model=FirebaseTokenResponse, status_code=status.HTTP_201_CREATED)
 async def register(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_database)):
@@ -46,7 +48,13 @@ async def login(user: UserLogin):
 @router.post("/firebase-login")
 async def firebase_login(request: FirebaseLoginRequest, db: AsyncIOMotorDatabase = Depends(get_database)):
     # 1. Verify token with Firebase
-    firebase_user = await get_user_by_token(request.idToken)
+    logger.debug(f"Attempting Firebase login with token: {request.idToken[:10]}...")
+    try:
+        firebase_user = await get_user_by_token(request.idToken)
+        logger.debug(f"Firebase user retrieved: {firebase_user.get('email')}")
+    except Exception as e:
+        logger.error(f"Error validating validation token: {str(e)}", exc_info=True)
+        raise
     
     # 2. Check/Update MongoDB
     user_id = firebase_user["localId"]
