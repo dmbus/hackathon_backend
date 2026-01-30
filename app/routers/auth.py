@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Header, Body
 from app.models.user import UserCreate, UserLogin, FirebaseTokenResponse, EmailRequest
+from app.core.security import UserRole, ROLES_PERMISSIONS
 from app.services.firebase_auth import (
     sign_up_with_email, 
     sign_in_with_email, 
@@ -22,6 +23,8 @@ async def register(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_data
     user_doc = {
         "_id": firebase_response["localId"],
         "email": firebase_response["email"],
+        "role": UserRole.STUDENT_FREE,
+        "permissions": ROLES_PERMISSIONS[UserRole.STUDENT_FREE],
         "created_at": datetime.utcnow()
     }
     
@@ -38,12 +41,12 @@ async def register(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_data
 async def login(user: UserLogin):
     return await sign_in_with_email(user.email, user.password)
 
-@router.post("/password-reset-request")
+@router.post("/recover")
 async def request_password_reset(request: EmailRequest):
     await send_password_reset_email(request.email)
     return {"message": "Password reset email sent"}
 
-@router.post("/verify-email")
+@router.post("/verify")
 async def verify_user_email(authorization: str = Header(..., description="Bearer <token>")):
     # Extract token from Bearer header
     if not authorization.startswith("Bearer "):

@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
+from typing import Optional, List, Any
+from app.core.security import UserRole, ROLES_PERMISSIONS
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -19,3 +20,17 @@ class FirebaseTokenResponse(BaseModel):
 
 class EmailRequest(BaseModel):
     email: EmailStr
+
+class UserInDB(BaseModel):
+    id: str  # maps to _id
+    email: EmailStr
+    role: str
+    permissions: List[str]
+    created_at: Any = None
+
+class UserResponse(BaseModel):
+    id: str
+    email: EmailStr
+    role: str
+    permissions: List[str]
+

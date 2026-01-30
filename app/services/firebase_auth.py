@@ -67,3 +67,25 @@ async def send_email_verification(id_token: str):
             detail=f"Email Verification Error: {error_msg}"
         )
     return response.json()
+
+async def get_user_by_token(id_token: str):
+    url = f"{FIREBASE_AUTH_URL}:lookup?key={settings.FIREBASE_API}"
+    payload = {"idToken": id_token}
+    
+    async with httpx.AsyncClient() as client:
+        response = await client.post(url, json=payload)
+        
+    if response.status_code != 200:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication credentials"
+        )
+        
+    data = response.json()
+    if not data.get("users"):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found"
+        )
+        
+    return data["users"][0]
