@@ -341,7 +341,7 @@ export default function App() {
 
         <div className="text-center mt-8">
           <p className="font-mono text-sm text-slate-400 opacity-80">
-            Secure Authentication
+            Sprache.app Secure Login
           </p>
         </div>
       </div>
