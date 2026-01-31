@@ -168,28 +168,26 @@ async def get_practice_session(
             question_text_en = db_question.get("question_en", "")
             question_theme = db_question.get("theme", "")
             question_level = db_question.get("level", "A1")
-            target_word_strings = db_question.get("target_words", [])
+            target_words_data = db_question.get("target_words", [])
             
-            # Create target words with translations (look up in words collection)
+            # Create target words from the question data
+            # Target words are stored as objects with "word" and "translation"
             words = []
-            for word_text in target_word_strings:
-                # Try to find the word in the words collection for translation
-                word_doc = await db["words"].find_one({"word": word_text})
-                translation = ""
-                if word_doc:
-                    translations = word_doc.get("translations", [])
-                    for t in translations:
-                        if t.get("language_code") == "en":
-                            translation = t.get("content", "")
-                            break
-                    if not translation and translations:
-                        translation = translations[0].get("content", "")
-                
-                words.append(TargetWord(
-                    wordId=str(word_doc["_id"]) if word_doc else "",
-                    word=word_text,
-                    translation=translation
-                ))
+            for tw in target_words_data:
+                if isinstance(tw, dict):
+                    # New format: {"word": "Name", "translation": "name"}
+                    words.append(TargetWord(
+                        wordId="",  # No wordId needed since words come from question
+                        word=tw.get("word", ""),
+                        translation=tw.get("translation", "")
+                    ))
+                else:
+                    # Old format: just a string - fallback for backwards compatibility
+                    words.append(TargetWord(
+                        wordId="",
+                        word=str(tw),
+                        translation=""
+                    ))
             
             return PracticeSessionResponse(
                 question=SpeakingQuestion(

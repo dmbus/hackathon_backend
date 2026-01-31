@@ -20,6 +20,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Speaking questions data - organized by level
+# Each target_word is now an object with "word" and "translation"
+
 A1_QUESTIONS = [
     {
         "id": 1,
@@ -27,7 +29,11 @@ A1_QUESTIONS = [
         "theme": "Introduction",
         "question": "Wie heißt du und woher kommst du?",
         "question_en": "What is your name and where do you come from?",
-        "target_words": ["Name", "kommen", "Land"]
+        "target_words": [
+            {"word": "Name", "translation": "name"},
+            {"word": "kommen", "translation": "to come"},
+            {"word": "Land", "translation": "country"}
+        ]
     },
     {
         "id": 2,
@@ -35,7 +41,11 @@ A1_QUESTIONS = [
         "theme": "Hobbies",
         "question": "Was machst du gern in deiner Freizeit?",
         "question_en": "What do you like to do in your free time?",
-        "target_words": ["Sport", "lesen", "Musik"]
+        "target_words": [
+            {"word": "Sport", "translation": "sport"},
+            {"word": "lesen", "translation": "to read"},
+            {"word": "Musik", "translation": "music"}
+        ]
     },
     {
         "id": 3,
@@ -43,7 +53,11 @@ A1_QUESTIONS = [
         "theme": "Family",
         "question": "Erzähl mir von deiner Familie.",
         "question_en": "Tell me about your family.",
-        "target_words": ["Bruder", "Schwester", "Eltern"]
+        "target_words": [
+            {"word": "Bruder", "translation": "brother"},
+            {"word": "Schwester", "translation": "sister"},
+            {"word": "Eltern", "translation": "parents"}
+        ]
     },
     {
         "id": 4,
@@ -51,7 +65,11 @@ A1_QUESTIONS = [
         "theme": "Food & Drink",
         "question": "Was isst du gern zum Frühstück?",
         "question_en": "What do you like to eat for breakfast?",
-        "target_words": ["Brot", "Kaffee", "Ei"]
+        "target_words": [
+            {"word": "Brot", "translation": "bread"},
+            {"word": "Kaffee", "translation": "coffee"},
+            {"word": "Ei", "translation": "egg"}
+        ]
     },
     {
         "id": 5,
@@ -59,7 +77,11 @@ A1_QUESTIONS = [
         "theme": "Work",
         "question": "Was bist du von Beruf?",
         "question_en": "What is your job?",
-        "target_words": ["arbeiten", "Büro", "Kollege"]
+        "target_words": [
+            {"word": "arbeiten", "translation": "to work"},
+            {"word": "Büro", "translation": "office"},
+            {"word": "Kollege", "translation": "colleague"}
+        ]
     },
     {
         "id": 6,
@@ -67,7 +89,11 @@ A1_QUESTIONS = [
         "theme": "Shopping",
         "question": "Was möchtest du im Supermarkt kaufen?",
         "question_en": "What would you like to buy at the supermarket?",
-        "target_words": ["Milch", "teuer", "Euro"]
+        "target_words": [
+            {"word": "Milch", "translation": "milk"},
+            {"word": "teuer", "translation": "expensive"},
+            {"word": "Euro", "translation": "euro"}
+        ]
     },
     {
         "id": 7,
@@ -75,7 +101,11 @@ A1_QUESTIONS = [
         "theme": "Daily Routine",
         "question": "Wann stehst du morgens auf?",
         "question_en": "When do you get up in the morning?",
-        "target_words": ["Uhr", "früh", "morgen"]
+        "target_words": [
+            {"word": "Uhr", "translation": "clock/time"},
+            {"word": "früh", "translation": "early"},
+            {"word": "morgen", "translation": "morning/tomorrow"}
+        ]
     },
     {
         "id": 8,
@@ -83,7 +113,11 @@ A1_QUESTIONS = [
         "theme": "Weekend",
         "question": "Was machst du am Wochenende?",
         "question_en": "What do you do on the weekend?",
-        "target_words": ["Samstag", "Freunde", "schlafen"]
+        "target_words": [
+            {"word": "Samstag", "translation": "Saturday"},
+            {"word": "Freunde", "translation": "friends"},
+            {"word": "schlafen", "translation": "to sleep"}
+        ]
     },
     {
         "id": 9,
@@ -91,7 +125,11 @@ A1_QUESTIONS = [
         "theme": "Home",
         "question": "Wie ist deine Wohnung?",
         "question_en": "What is your apartment like?",
-        "target_words": ["groß", "Zimmer", "Küche"]
+        "target_words": [
+            {"word": "groß", "translation": "big"},
+            {"word": "Zimmer", "translation": "room"},
+            {"word": "Küche", "translation": "kitchen"}
+        ]
     },
     {
         "id": 10,
@@ -99,7 +137,11 @@ A1_QUESTIONS = [
         "theme": "Weather",
         "question": "Wie ist das Wetter heute?",
         "question_en": "How is the weather today?",
-        "target_words": ["Sonne", "kalt", "regnen"]
+        "target_words": [
+            {"word": "Sonne", "translation": "sun"},
+            {"word": "kalt", "translation": "cold"},
+            {"word": "regnen", "translation": "to rain"}
+        ]
     },
     {
         "id": 11,
@@ -107,7 +149,11 @@ A1_QUESTIONS = [
         "theme": "Transport",
         "question": "Wie fährst du zur Arbeit oder zur Schule?",
         "question_en": "How do you go to work or school?",
-        "target_words": ["Bus", "Auto", "Zug"]
+        "target_words": [
+            {"word": "Bus", "translation": "bus"},
+            {"word": "Auto", "translation": "car"},
+            {"word": "Zug", "translation": "train"}
+        ]
     },
     {
         "id": 12,
@@ -115,7 +161,11 @@ A1_QUESTIONS = [
         "theme": "Restaurant",
         "question": "Was möchten Sie bestellen?",
         "question_en": "What would you like to order?",
-        "target_words": ["Wasser", "Fleisch", "Rechnung"]
+        "target_words": [
+            {"word": "Wasser", "translation": "water"},
+            {"word": "Fleisch", "translation": "meat"},
+            {"word": "Rechnung", "translation": "bill"}
+        ]
     },
     {
         "id": 13,
@@ -123,7 +173,11 @@ A1_QUESTIONS = [
         "theme": "Clothing",
         "question": "Was trägst du heute?",
         "question_en": "What are you wearing today?",
-        "target_words": ["Hose", "blau", "T-Shirt"]
+        "target_words": [
+            {"word": "Hose", "translation": "pants"},
+            {"word": "blau", "translation": "blue"},
+            {"word": "T-Shirt", "translation": "t-shirt"}
+        ]
     },
     {
         "id": 14,
@@ -131,7 +185,11 @@ A1_QUESTIONS = [
         "theme": "Language Learning",
         "question": "Warum lernst du Deutsch?",
         "question_en": "Why are you learning German?",
-        "target_words": ["Sprache", "verstehen", "lernen"]
+        "target_words": [
+            {"word": "Sprache", "translation": "language"},
+            {"word": "verstehen", "translation": "to understand"},
+            {"word": "lernen", "translation": "to learn"}
+        ]
     },
     {
         "id": 15,
@@ -139,7 +197,11 @@ A1_QUESTIONS = [
         "theme": "Travel",
         "question": "Wohin reist du gern im Urlaub?",
         "question_en": "Where do you like to travel on vacation?",
-        "target_words": ["Meer", "Strand", "Flugzeug"]
+        "target_words": [
+            {"word": "Meer", "translation": "sea"},
+            {"word": "Strand", "translation": "beach"},
+            {"word": "Flugzeug", "translation": "airplane"}
+        ]
     },
     {
         "id": 16,
@@ -147,7 +209,11 @@ A1_QUESTIONS = [
         "theme": "City",
         "question": "Was gibt es in deiner Stadt?",
         "question_en": "What is there in your city?",
-        "target_words": ["Park", "Bahnhof", "Kino"]
+        "target_words": [
+            {"word": "Park", "translation": "park"},
+            {"word": "Bahnhof", "translation": "train station"},
+            {"word": "Kino", "translation": "cinema"}
+        ]
     },
     {
         "id": 17,
@@ -155,7 +221,11 @@ A1_QUESTIONS = [
         "theme": "Health",
         "question": "Wie geht es dir heute?",
         "question_en": "How are you today?",
-        "target_words": ["gut", "müde", "Kopfschmerzen"]
+        "target_words": [
+            {"word": "gut", "translation": "good"},
+            {"word": "müde", "translation": "tired"},
+            {"word": "Kopfschmerzen", "translation": "headache"}
+        ]
     },
     {
         "id": 18,
@@ -163,7 +233,11 @@ A1_QUESTIONS = [
         "theme": "Furniture",
         "question": "Was hast du in deinem Wohnzimmer?",
         "question_en": "What do you have in your living room?",
-        "target_words": ["Tisch", "Sofa", "Fernseher"]
+        "target_words": [
+            {"word": "Tisch", "translation": "table"},
+            {"word": "Sofa", "translation": "sofa"},
+            {"word": "Fernseher", "translation": "television"}
+        ]
     },
     {
         "id": 19,
@@ -171,7 +245,11 @@ A1_QUESTIONS = [
         "theme": "Birthday",
         "question": "Wann hast du Geburtstag?",
         "question_en": "When is your birthday?",
-        "target_words": ["Jahr", "Party", "Geschenk"]
+        "target_words": [
+            {"word": "Jahr", "translation": "year"},
+            {"word": "Party", "translation": "party"},
+            {"word": "Geschenk", "translation": "gift"}
+        ]
     },
     {
         "id": 20,
@@ -179,7 +257,11 @@ A1_QUESTIONS = [
         "theme": "Pets",
         "question": "Hast du ein Haustier?",
         "question_en": "Do you have a pet?",
-        "target_words": ["Hund", "Katze", "lieb"]
+        "target_words": [
+            {"word": "Hund", "translation": "dog"},
+            {"word": "Katze", "translation": "cat"},
+            {"word": "lieb", "translation": "sweet/dear"}
+        ]
     },
     {
         "id": 21,
@@ -187,7 +269,11 @@ A1_QUESTIONS = [
         "theme": "Evening",
         "question": "Was machst du am Abend?",
         "question_en": "What do you do in the evening?",
-        "target_words": ["fernsehen", "Buch", "essen"]
+        "target_words": [
+            {"word": "fernsehen", "translation": "to watch TV"},
+            {"word": "Buch", "translation": "book"},
+            {"word": "essen", "translation": "to eat"}
+        ]
     },
     {
         "id": 22,
@@ -195,7 +281,11 @@ A1_QUESTIONS = [
         "theme": "Directions",
         "question": "Wo ist die Toilette, bitte?",
         "question_en": "Where is the toilet, please?",
-        "target_words": ["links", "rechts", "geradeaus"]
+        "target_words": [
+            {"word": "links", "translation": "left"},
+            {"word": "rechts", "translation": "right"},
+            {"word": "geradeaus", "translation": "straight ahead"}
+        ]
     },
     {
         "id": 23,
@@ -203,7 +293,11 @@ A1_QUESTIONS = [
         "theme": "Colors",
         "question": "Was ist deine Lieblingsfarbe?",
         "question_en": "What is your favorite color?",
-        "target_words": ["rot", "grün", "schwarz"]
+        "target_words": [
+            {"word": "rot", "translation": "red"},
+            {"word": "grün", "translation": "green"},
+            {"word": "schwarz", "translation": "black"}
+        ]
     },
     {
         "id": 24,
@@ -211,7 +305,11 @@ A1_QUESTIONS = [
         "theme": "Appointments",
         "question": "Hast du am Montag Zeit?",
         "question_en": "Do you have time on Monday?",
-        "target_words": ["Termin", "Woche", "treffen"]
+        "target_words": [
+            {"word": "Termin", "translation": "appointment"},
+            {"word": "Woche", "translation": "week"},
+            {"word": "treffen", "translation": "to meet"}
+        ]
     },
     {
         "id": 25,
@@ -219,7 +317,11 @@ A1_QUESTIONS = [
         "theme": "Restaurant Payment",
         "question": "Möchten Sie bar oder mit Karte zahlen?",
         "question_en": "Would you like to pay cash or by card?",
-        "target_words": ["Karte", "bezahlen", "bitte"]
+        "target_words": [
+            {"word": "Karte", "translation": "card"},
+            {"word": "bezahlen", "translation": "to pay"},
+            {"word": "bitte", "translation": "please"}
+        ]
     }
 ]
 
@@ -230,7 +332,11 @@ A2_QUESTIONS = [
         "theme": "Last Vacation (Past Tense)",
         "question": "Wo warst du in deinem letzten Urlaub und was hast du gemacht?",
         "question_en": "Where were you on your last vacation and what did you do?",
-        "target_words": ["gereist", "Meer", "besichtigt"]
+        "target_words": [
+            {"word": "gereist", "translation": "traveled"},
+            {"word": "Meer", "translation": "sea"},
+            {"word": "besichtigt", "translation": "visited/toured"}
+        ]
     },
     {
         "id": 102,
@@ -238,7 +344,11 @@ A2_QUESTIONS = [
         "theme": "Weekend Activities (Past Tense)",
         "question": "Was hast du am letzten Wochenende gemacht?",
         "question_en": "What did you do last weekend?",
-        "target_words": ["Freunde", "getroffen", "ausgegangen"]
+        "target_words": [
+            {"word": "Freunde", "translation": "friends"},
+            {"word": "getroffen", "translation": "met"},
+            {"word": "ausgegangen", "translation": "went out"}
+        ]
     },
     {
         "id": 103,
@@ -246,7 +356,11 @@ A2_QUESTIONS = [
         "theme": "Shopping for Clothes",
         "question": "Du möchtest eine Jacke kaufen. Was sagst du zum Verkäufer?",
         "question_en": "You want to buy a jacket. What do you say to the salesperson?",
-        "target_words": ["Größe", "anprobieren", "passen"]
+        "target_words": [
+            {"word": "Größe", "translation": "size"},
+            {"word": "anprobieren", "translation": "to try on"},
+            {"word": "passen", "translation": "to fit"}
+        ]
     },
     {
         "id": 104,
@@ -254,7 +368,11 @@ A2_QUESTIONS = [
         "theme": "Health & Sickness",
         "question": "Du bist krank und rufst deinen Chef an. Was sagst du?",
         "question_en": "You are sick and calling your boss. What do you say?",
-        "target_words": ["Fieber", "Arzt", "heute"]
+        "target_words": [
+            {"word": "Fieber", "translation": "fever"},
+            {"word": "Arzt", "translation": "doctor"},
+            {"word": "heute", "translation": "today"}
+        ]
     },
     {
         "id": 105,
@@ -262,7 +380,11 @@ A2_QUESTIONS = [
         "theme": "Future Plans",
         "question": "Was sind deine Pläne für den nächsten Sommer?",
         "question_en": "What are your plans for next summer?",
-        "target_words": ["werden", "reisen", "besuchen"]
+        "target_words": [
+            {"word": "werden", "translation": "will/to become"},
+            {"word": "reisen", "translation": "to travel"},
+            {"word": "besuchen", "translation": "to visit"}
+        ]
     },
     {
         "id": 106,
@@ -270,7 +392,11 @@ A2_QUESTIONS = [
         "theme": "Restaurant Complaint",
         "question": "Das Essen im Restaurant ist kalt. Was sagst du zum Kellner?",
         "question_en": "The food in the restaurant is cold. What do you say to the waiter?",
-        "target_words": ["Entschuldigung", "kalt", "zurückgeben"]
+        "target_words": [
+            {"word": "Entschuldigung", "translation": "excuse me/sorry"},
+            {"word": "kalt", "translation": "cold"},
+            {"word": "zurückgeben", "translation": "to return/give back"}
+        ]
     },
     {
         "id": 107,
@@ -278,7 +404,11 @@ A2_QUESTIONS = [
         "theme": "Daily Routine (Reflexive)",
         "question": "Wie sieht ein normaler Arbeitstag bei dir aus?",
         "question_en": "What does a normal workday look like for you?",
-        "target_words": ["aufstehen", "duschen", "Büro"]
+        "target_words": [
+            {"word": "aufstehen", "translation": "to get up"},
+            {"word": "duschen", "translation": "to shower"},
+            {"word": "Büro", "translation": "office"}
+        ]
     },
     {
         "id": 108,
@@ -286,7 +416,11 @@ A2_QUESTIONS = [
         "theme": "Directions",
         "question": "Ein Tourist fragt nach dem Weg zum Bahnhof. Wie hilfst du ihm?",
         "question_en": "A tourist asks for the way to the train station. How do you help him?",
-        "target_words": ["abbiegen", "Ampel", "geradeaus"]
+        "target_words": [
+            {"word": "abbiegen", "translation": "to turn"},
+            {"word": "Ampel", "translation": "traffic light"},
+            {"word": "geradeaus", "translation": "straight ahead"}
+        ]
     },
     {
         "id": 109,
@@ -294,7 +428,11 @@ A2_QUESTIONS = [
         "theme": "Invitations",
         "question": "Du möchtest deinen Freund ins Kino einladen. Was fragst du ihn?",
         "question_en": "You want to invite your friend to the cinema. What do you ask him?",
-        "target_words": ["Lust", "Zeit", "Film"]
+        "target_words": [
+            {"word": "Lust", "translation": "desire/feel like"},
+            {"word": "Zeit", "translation": "time"},
+            {"word": "Film", "translation": "film/movie"}
+        ]
     },
     {
         "id": 110,
@@ -302,7 +440,11 @@ A2_QUESTIONS = [
         "theme": "Moving House",
         "question": "Beschreibe deine Traumwohnung.",
         "question_en": "Describe your dream apartment.",
-        "target_words": ["Balkon", "hell", "Zentrum"]
+        "target_words": [
+            {"word": "Balkon", "translation": "balcony"},
+            {"word": "hell", "translation": "bright"},
+            {"word": "Zentrum", "translation": "center"}
+        ]
     },
     {
         "id": 111,
@@ -310,7 +452,11 @@ A2_QUESTIONS = [
         "theme": "Education/School",
         "question": "Welches Fach hast du in der Schule gemocht und warum?",
         "question_en": "Which subject did you like in school and why?",
-        "target_words": ["Mathe", "interessant", "Lehrer"]
+        "target_words": [
+            {"word": "Mathe", "translation": "math"},
+            {"word": "interessant", "translation": "interesting"},
+            {"word": "Lehrer", "translation": "teacher"}
+        ]
     },
     {
         "id": 112,
@@ -318,7 +464,11 @@ A2_QUESTIONS = [
         "theme": "Technology",
         "question": "Wie oft benutzt du dein Handy und wofür?",
         "question_en": "How often do you use your cell phone and for what?",
-        "target_words": ["Nachrichten", "Internet", "schicken"]
+        "target_words": [
+            {"word": "Nachrichten", "translation": "messages/news"},
+            {"word": "Internet", "translation": "internet"},
+            {"word": "schicken", "translation": "to send"}
+        ]
     },
     {
         "id": 113,
@@ -326,7 +476,11 @@ A2_QUESTIONS = [
         "theme": "Gifts",
         "question": "Deine Mutter hat Geburtstag. Was schenkst du ihr?",
         "question_en": "It is your mother's birthday. What do you give her?",
-        "target_words": ["Blumen", "Parfüm", "Idee"]
+        "target_words": [
+            {"word": "Blumen", "translation": "flowers"},
+            {"word": "Parfüm", "translation": "perfume"},
+            {"word": "Idee", "translation": "idea"}
+        ]
     },
     {
         "id": 114,
@@ -334,7 +488,11 @@ A2_QUESTIONS = [
         "theme": "Public Transport",
         "question": "Der Zug hat Verspätung. Du sprichst mit einem anderen Fahrgast.",
         "question_en": "The train is delayed. You speak to another passenger.",
-        "target_words": ["warten", "Minuten", "Anschluss"]
+        "target_words": [
+            {"word": "warten", "translation": "to wait"},
+            {"word": "Minuten", "translation": "minutes"},
+            {"word": "Anschluss", "translation": "connection"}
+        ]
     },
     {
         "id": 115,
@@ -342,7 +500,11 @@ A2_QUESTIONS = [
         "theme": "Comparison",
         "question": "Wohnst du lieber in der Stadt oder auf dem Land? Warum?",
         "question_en": "Do you prefer living in the city or in the country? Why?",
-        "target_words": ["laut", "ruhig", "besser"]
+        "target_words": [
+            {"word": "laut", "translation": "loud"},
+            {"word": "ruhig", "translation": "quiet"},
+            {"word": "besser", "translation": "better"}
+        ]
     },
     {
         "id": 116,
@@ -350,7 +512,11 @@ A2_QUESTIONS = [
         "theme": "Cooking",
         "question": "Was ist dein Lieblingsgericht und kannst du es kochen?",
         "question_en": "What is your favorite dish and can you cook it?",
-        "target_words": ["Rezept", "Zutaten", "lecker"]
+        "target_words": [
+            {"word": "Rezept", "translation": "recipe"},
+            {"word": "Zutaten", "translation": "ingredients"},
+            {"word": "lecker", "translation": "delicious"}
+        ]
     }
 ]
 
@@ -361,7 +527,11 @@ B1_QUESTIONS = [
         "theme": "Social Media",
         "question": "Was sind die Vor- und Nachteile von sozialen Medien deiner Meinung nach?",
         "question_en": "In your opinion, what are the advantages and disadvantages of social media?",
-        "target_words": ["Vorteil", "Nachteil", "kommunizieren"]
+        "target_words": [
+            {"word": "Vorteil", "translation": "advantage"},
+            {"word": "Nachteil", "translation": "disadvantage"},
+            {"word": "kommunizieren", "translation": "to communicate"}
+        ]
     },
     {
         "id": 202,
@@ -369,7 +539,11 @@ B1_QUESTIONS = [
         "theme": "Environment",
         "question": "Was machst du persönlich für den Umweltschutz?",
         "question_en": "What do you personally do for environmental protection?",
-        "target_words": ["Müll trennen", "Umwelt", "vermeiden"]
+        "target_words": [
+            {"word": "Müll trennen", "translation": "to separate waste"},
+            {"word": "Umwelt", "translation": "environment"},
+            {"word": "vermeiden", "translation": "to avoid"}
+        ]
     },
     {
         "id": 203,
@@ -377,7 +551,11 @@ B1_QUESTIONS = [
         "theme": "Work-Life Balance",
         "question": "Was ist wichtiger: Ein hohes Gehalt oder nette Kollegen? Begründe deine Meinung.",
         "question_en": "What is more important: A high salary or nice colleagues? Justify your opinion.",
-        "target_words": ["Gehalt", "Betriebsklima", "zufrieden"]
+        "target_words": [
+            {"word": "Gehalt", "translation": "salary"},
+            {"word": "Betriebsklima", "translation": "work atmosphere"},
+            {"word": "zufrieden", "translation": "satisfied"}
+        ]
     },
     {
         "id": 204,
@@ -385,7 +563,11 @@ B1_QUESTIONS = [
         "theme": "Healthy Lifestyle",
         "question": "Was bedeutet für dich ein gesundes Leben?",
         "question_en": "What does a healthy life mean to you?",
-        "target_words": ["Ernährung", "bewegen", "Stress"]
+        "target_words": [
+            {"word": "Ernährung", "translation": "nutrition/diet"},
+            {"word": "bewegen", "translation": "to move/exercise"},
+            {"word": "Stress", "translation": "stress"}
+        ]
     },
     {
         "id": 205,
@@ -393,7 +575,11 @@ B1_QUESTIONS = [
         "theme": "Travel Experiences",
         "question": "Erzähl von einer Reise, die du nie vergessen wirst. Was ist passiert?",
         "question_en": "Tell about a trip you will never forget. What happened?",
-        "target_words": ["Erlebnis", "überrascht", "Kultur"]
+        "target_words": [
+            {"word": "Erlebnis", "translation": "experience"},
+            {"word": "überrascht", "translation": "surprised"},
+            {"word": "Kultur", "translation": "culture"}
+        ]
     },
     {
         "id": 206,
@@ -401,7 +587,11 @@ B1_QUESTIONS = [
         "theme": "Online Shopping",
         "question": "Kaufst du lieber im Internet oder im Geschäft ein? Warum?",
         "question_en": "Do you prefer shopping on the internet or in a store? Why?",
-        "target_words": ["bestellen", "anprobieren", "Auswahl"]
+        "target_words": [
+            {"word": "bestellen", "translation": "to order"},
+            {"word": "anprobieren", "translation": "to try on"},
+            {"word": "Auswahl", "translation": "selection/choice"}
+        ]
     },
     {
         "id": 207,
@@ -409,7 +599,11 @@ B1_QUESTIONS = [
         "theme": "Public Transport vs Car",
         "question": "Sollte man in der Innenstadt das Autofahren verbieten?",
         "question_en": "Should driving be banned in the city center?",
-        "target_words": ["Verkehrsmittel", "Stau", "Luftverschmutzung"]
+        "target_words": [
+            {"word": "Verkehrsmittel", "translation": "means of transport"},
+            {"word": "Stau", "translation": "traffic jam"},
+            {"word": "Luftverschmutzung", "translation": "air pollution"}
+        ]
     },
     {
         "id": 208,
@@ -417,7 +611,11 @@ B1_QUESTIONS = [
         "theme": "Future Plans",
         "question": "Wo siehst du dich beruflich in fünf Jahren?",
         "question_en": "Where do you see yourself professionally in five years?",
-        "target_words": ["Karriere", "Fortbildung", "erreichen"]
+        "target_words": [
+            {"word": "Karriere", "translation": "career"},
+            {"word": "Fortbildung", "translation": "further education"},
+            {"word": "erreichen", "translation": "to achieve"}
+        ]
     },
     {
         "id": 209,
@@ -425,7 +623,11 @@ B1_QUESTIONS = [
         "theme": "Learning Languages",
         "question": "Was findest du am schwierigsten beim Deutschlernen?",
         "question_en": "What do you find most difficult about learning German?",
-        "target_words": ["Grammatik", "Aussprache", "üben"]
+        "target_words": [
+            {"word": "Grammatik", "translation": "grammar"},
+            {"word": "Aussprache", "translation": "pronunciation"},
+            {"word": "üben", "translation": "to practice"}
+        ]
     },
     {
         "id": 210,
@@ -433,7 +635,11 @@ B1_QUESTIONS = [
         "theme": "Friendship",
         "question": "Was macht einen guten Freund oder eine gute Freundin aus?",
         "question_en": "What makes a good friend?",
-        "target_words": ["vertrauen", "zuverlässig", "helfen"]
+        "target_words": [
+            {"word": "vertrauen", "translation": "to trust"},
+            {"word": "zuverlässig", "translation": "reliable"},
+            {"word": "helfen", "translation": "to help"}
+        ]
     },
     {
         "id": 211,
@@ -441,7 +647,11 @@ B1_QUESTIONS = [
         "theme": "Housing",
         "question": "Würdest du lieber in einer kleinen Wohnung im Zentrum oder in einem großen Haus auf dem Land wohnen?",
         "question_en": "Would you rather live in a small apartment in the center or a large house in the country?",
-        "target_words": ["Miete", "Lage", "Nachbarn"]
+        "target_words": [
+            {"word": "Miete", "translation": "rent"},
+            {"word": "Lage", "translation": "location"},
+            {"word": "Nachbarn", "translation": "neighbors"}
+        ]
     },
     {
         "id": 212,
@@ -449,7 +659,11 @@ B1_QUESTIONS = [
         "theme": "Complaint (Service)",
         "question": "Du hast ein kaputtes Produkt erhalten. Beschwere dich beim Kundenservice.",
         "question_en": "You received a broken product. Complain to customer service.",
-        "target_words": ["beschädigt", "umtauschen", "Geld zurück"]
+        "target_words": [
+            {"word": "beschädigt", "translation": "damaged"},
+            {"word": "umtauschen", "translation": "to exchange"},
+            {"word": "Geld zurück", "translation": "money back"}
+        ]
     },
     {
         "id": 213,
@@ -457,7 +671,11 @@ B1_QUESTIONS = [
         "theme": "Movies & Series",
         "question": "Welchen Film hast du zuletzt gesehen und worum ging es?",
         "question_en": "Which movie did you watch last and what was it about?",
-        "target_words": ["Handlung", "Schauspieler", "spannend"]
+        "target_words": [
+            {"word": "Handlung", "translation": "plot"},
+            {"word": "Schauspieler", "translation": "actor"},
+            {"word": "spannend", "translation": "exciting"}
+        ]
     },
     {
         "id": 214,
@@ -465,7 +683,11 @@ B1_QUESTIONS = [
         "theme": "Festivals & Traditions",
         "question": "Welches Fest ist in deinem Heimatland besonders wichtig und wie feiert man es?",
         "question_en": "Which festival is particularly important in your home country and how is it celebrated?",
-        "target_words": ["Tradition", "feiern", "Familie"]
+        "target_words": [
+            {"word": "Tradition", "translation": "tradition"},
+            {"word": "feiern", "translation": "to celebrate"},
+            {"word": "Familie", "translation": "family"}
+        ]
     },
     {
         "id": 215,
@@ -473,7 +695,11 @@ B1_QUESTIONS = [
         "theme": "Technology in Daily Life",
         "question": "Könntest du eine Woche ohne Internet leben?",
         "question_en": "Could you live a week without the internet?",
-        "target_words": ["abhängig", "Smartphone", "Informationen"]
+        "target_words": [
+            {"word": "abhängig", "translation": "dependent"},
+            {"word": "Smartphone", "translation": "smartphone"},
+            {"word": "Informationen", "translation": "information"}
+        ]
     },
     {
         "id": 216,
@@ -481,7 +707,11 @@ B1_QUESTIONS = [
         "theme": "Eating Habits",
         "question": "Wie hat sich deine Ernährung in den letzten Jahren verändert?",
         "question_en": "How has your diet changed in the last few years?",
-        "target_words": ["vegetarisch", "kochen", "Gesundheit"]
+        "target_words": [
+            {"word": "vegetarisch", "translation": "vegetarian"},
+            {"word": "kochen", "translation": "to cook"},
+            {"word": "Gesundheit", "translation": "health"}
+        ]
     },
     {
         "id": 217,
@@ -489,7 +719,11 @@ B1_QUESTIONS = [
         "theme": "Advice to a Friend",
         "question": "Dein Freund hat Liebeskummer. Welchen Rat gibst du ihm?",
         "question_en": "Your friend is lovesick. What advice do you give him?",
-        "target_words": ["vorschlagen", "ablenken", "reden"]
+        "target_words": [
+            {"word": "vorschlagen", "translation": "to suggest"},
+            {"word": "ablenken", "translation": "to distract"},
+            {"word": "reden", "translation": "to talk"}
+        ]
     },
     {
         "id": 218,
@@ -497,7 +731,11 @@ B1_QUESTIONS = [
         "theme": "Job Interview (Strengths)",
         "question": "Was sind deine größten Stärken und Schwächen?",
         "question_en": "What are your greatest strengths and weaknesses?",
-        "target_words": ["organisiert", "Geduld", "Teamfähigkeit"]
+        "target_words": [
+            {"word": "organisiert", "translation": "organized"},
+            {"word": "Geduld", "translation": "patience"},
+            {"word": "Teamfähigkeit", "translation": "teamwork skills"}
+        ]
     },
     {
         "id": 219,
@@ -505,7 +743,11 @@ B1_QUESTIONS = [
         "theme": "School System",
         "question": "Was würdest du am Schulsystem ändern, wenn du könntest?",
         "question_en": "What would you change about the school system if you could?",
-        "target_words": ["Unterricht", "Noten", "verbessern"]
+        "target_words": [
+            {"word": "Unterricht", "translation": "lesson/class"},
+            {"word": "Noten", "translation": "grades"},
+            {"word": "verbessern", "translation": "to improve"}
+        ]
     },
     {
         "id": 220,
@@ -513,7 +755,11 @@ B1_QUESTIONS = [
         "theme": "Volunteering",
         "question": "Hältst du ehrenamtliche Arbeit für wichtig?",
         "question_en": "Do you consider volunteer work important?",
-        "target_words": ["Gesellschaft", "unterstützen", "Erfahrung"]
+        "target_words": [
+            {"word": "Gesellschaft", "translation": "society"},
+            {"word": "unterstützen", "translation": "to support"},
+            {"word": "Erfahrung", "translation": "experience"}
+        ]
     },
     {
         "id": 221,
@@ -521,7 +767,11 @@ B1_QUESTIONS = [
         "theme": "News & Media",
         "question": "Wie informierst du dich über aktuelle Nachrichten?",
         "question_en": "How do you inform yourself about current news?",
-        "target_words": ["Zeitung", "Online", "glauben"]
+        "target_words": [
+            {"word": "Zeitung", "translation": "newspaper"},
+            {"word": "Online", "translation": "online"},
+            {"word": "glauben", "translation": "to believe"}
+        ]
     },
     {
         "id": 222,
@@ -529,7 +779,11 @@ B1_QUESTIONS = [
         "theme": "Stress Management",
         "question": "Was machst du, wenn du viel Stress hast?",
         "question_en": "What do you do when you have a lot of stress?",
-        "target_words": ["entspannen", "Ruhe", "ausgleichen"]
+        "target_words": [
+            {"word": "entspannen", "translation": "to relax"},
+            {"word": "Ruhe", "translation": "peace/quiet"},
+            {"word": "ausgleichen", "translation": "to balance"}
+        ]
     },
     {
         "id": 223,
@@ -537,7 +791,11 @@ B1_QUESTIONS = [
         "theme": "Fashion & Clothing",
         "question": "Ist dir Mode wichtig oder ist Kleidung nur praktisch für dich?",
         "question_en": "Is fashion important to you or is clothing just practical for you?",
-        "target_words": ["Stil", "Marken", "tragen"]
+        "target_words": [
+            {"word": "Stil", "translation": "style"},
+            {"word": "Marken", "translation": "brands"},
+            {"word": "tragen", "translation": "to wear"}
+        ]
     },
     {
         "id": 224,
@@ -545,7 +803,11 @@ B1_QUESTIONS = [
         "theme": "Childhood Memories",
         "question": "Was war dein liebstes Spielzeug als Kind?",
         "question_en": "What was your favorite toy as a child?",
-        "target_words": ["erinnern", "spielen", "damals"]
+        "target_words": [
+            {"word": "erinnern", "translation": "to remember"},
+            {"word": "spielen", "translation": "to play"},
+            {"word": "damals", "translation": "back then"}
+        ]
     },
     {
         "id": 225,
@@ -553,7 +815,11 @@ B1_QUESTIONS = [
         "theme": "Cultural Differences",
         "question": "Was ist der größte Unterschied zwischen Deutschland und deinem Heimatland?",
         "question_en": "What is the biggest difference between Germany and your home country?",
-        "target_words": ["Mentalität", "Pünktlichkeit", "anders"]
+        "target_words": [
+            {"word": "Mentalität", "translation": "mentality"},
+            {"word": "Pünktlichkeit", "translation": "punctuality"},
+            {"word": "anders", "translation": "different"}
+        ]
     }
 ]
 
@@ -564,7 +830,11 @@ B2_QUESTIONS = [
         "theme": "Remote Work / Home Office",
         "question": "Ist das Arbeiten im Homeoffice ein Modell für die Zukunft? Nenne Vor- und Nachteile.",
         "question_en": "Is working from home a model for the future? Name advantages and disadvantages.",
-        "target_words": ["Effizienz", "pendeln", "Trennung"]
+        "target_words": [
+            {"word": "Effizienz", "translation": "efficiency"},
+            {"word": "pendeln", "translation": "to commute"},
+            {"word": "Trennung", "translation": "separation"}
+        ]
     },
     {
         "id": 302,
@@ -572,7 +842,11 @@ B2_QUESTIONS = [
         "theme": "Artificial Intelligence",
         "question": "Wird künstliche Intelligenz in Zukunft viele Arbeitsplätze ersetzen?",
         "question_en": "Will artificial intelligence replace many jobs in the future?",
-        "target_words": ["ersetzen", "Fortschritt", "Bedrohung"]
+        "target_words": [
+            {"word": "ersetzen", "translation": "to replace"},
+            {"word": "Fortschritt", "translation": "progress"},
+            {"word": "Bedrohung", "translation": "threat"}
+        ]
     },
     {
         "id": 303,
@@ -580,7 +854,11 @@ B2_QUESTIONS = [
         "theme": "Climate Change Responsibility",
         "question": "Wer trägt mehr Verantwortung für den Klimaschutz: Der Einzelne oder die Regierung?",
         "question_en": "Who bears more responsibility for climate protection: The individual or the government?",
-        "target_words": ["Maßnahmen", "Verantwortung", "Nachhaltigkeit"]
+        "target_words": [
+            {"word": "Maßnahmen", "translation": "measures"},
+            {"word": "Verantwortung", "translation": "responsibility"},
+            {"word": "Nachhaltigkeit", "translation": "sustainability"}
+        ]
     },
     {
         "id": 304,
@@ -588,7 +866,11 @@ B2_QUESTIONS = [
         "theme": "Globalization",
         "question": "Welche Auswirkungen hat die Globalisierung auf die lokale Kultur?",
         "question_en": "What effects does globalization have on local culture?",
-        "target_words": ["Einfluss", "Vielfalt", "bewahren"]
+        "target_words": [
+            {"word": "Einfluss", "translation": "influence"},
+            {"word": "Vielfalt", "translation": "diversity"},
+            {"word": "bewahren", "translation": "to preserve"}
+        ]
     },
     {
         "id": 305,
@@ -596,7 +878,11 @@ B2_QUESTIONS = [
         "theme": "Education vs. Experience",
         "question": "Was ist wichtiger für die Karriere: Ein Universitätsabschluss oder praktische Erfahrung?",
         "question_en": "What is more important for a career: A university degree or practical experience?",
-        "target_words": ["Fachwissen", "Voraussetzung", "Kompetenz"]
+        "target_words": [
+            {"word": "Fachwissen", "translation": "expertise"},
+            {"word": "Voraussetzung", "translation": "prerequisite"},
+            {"word": "Kompetenz", "translation": "competence"}
+        ]
     },
     {
         "id": 306,
@@ -604,7 +890,11 @@ B2_QUESTIONS = [
         "theme": "Data Privacy",
         "question": "Sind wir bereit, unsere Privatsphäre für mehr Sicherheit oder Komfort aufzugeben?",
         "question_en": "Are we willing to give up our privacy for more security or convenience?",
-        "target_words": ["Datenschutz", "überwachen", "transparent"]
+        "target_words": [
+            {"word": "Datenschutz", "translation": "data protection"},
+            {"word": "überwachen", "translation": "to monitor"},
+            {"word": "transparent", "translation": "transparent"}
+        ]
     },
     {
         "id": 307,
@@ -612,7 +902,11 @@ B2_QUESTIONS = [
         "theme": "Consumerism",
         "question": "Leben wir in einer Wegwerfgesellschaft? Sollten wir unser Konsumverhalten ändern?",
         "question_en": "Do we live in a throwaway society? Should we change our consumer behavior?",
-        "target_words": ["Konsum", "reparieren", "Qualität"]
+        "target_words": [
+            {"word": "Konsum", "translation": "consumption"},
+            {"word": "reparieren", "translation": "to repair"},
+            {"word": "Qualität", "translation": "quality"}
+        ]
     },
     {
         "id": 308,
@@ -620,7 +914,11 @@ B2_QUESTIONS = [
         "theme": "Urbanization",
         "question": "Was sind die größten Herausforderungen für Großstädte in den nächsten 20 Jahren?",
         "question_en": "What are the biggest challenges for big cities in the next 20 years?",
-        "target_words": ["Infrastruktur", "Mietpreise", "Bevölkerungswachstum"]
+        "target_words": [
+            {"word": "Infrastruktur", "translation": "infrastructure"},
+            {"word": "Mietpreise", "translation": "rental prices"},
+            {"word": "Bevölkerungswachstum", "translation": "population growth"}
+        ]
     },
     {
         "id": 309,
@@ -628,7 +926,11 @@ B2_QUESTIONS = [
         "theme": "Mental Health",
         "question": "Warum wird das Thema psychische Gesundheit am Arbeitsplatz immer wichtiger?",
         "question_en": "Why is the topic of mental health in the workplace becoming increasingly important?",
-        "target_words": ["Leistungsdruck", "Burnout", "Wohlbefinden"]
+        "target_words": [
+            {"word": "Leistungsdruck", "translation": "performance pressure"},
+            {"word": "Burnout", "translation": "burnout"},
+            {"word": "Wohlbefinden", "translation": "well-being"}
+        ]
     },
     {
         "id": 310,
@@ -636,7 +938,11 @@ B2_QUESTIONS = [
         "theme": "Gender Equality",
         "question": "Ist die Gleichberechtigung von Männern und Frauen in der Gesellschaft bereits erreicht?",
         "question_en": "Has gender equality been achieved in society yet?",
-        "target_words": ["Chancengleichheit", "Gehalt", "diskriminieren"]
+        "target_words": [
+            {"word": "Chancengleichheit", "translation": "equal opportunity"},
+            {"word": "Gehalt", "translation": "salary"},
+            {"word": "diskriminieren", "translation": "to discriminate"}
+        ]
     },
     {
         "id": 311,
@@ -644,7 +950,11 @@ B2_QUESTIONS = [
         "theme": "Mass Tourism",
         "question": "Schadet der Massentourismus den Urlaubsorten mehr, als er nutzt?",
         "question_en": "Does mass tourism harm vacation spots more than it benefits them?",
-        "target_words": ["Umweltbelastung", "Profitieren", "Einschränkung"]
+        "target_words": [
+            {"word": "Umweltbelastung", "translation": "environmental impact"},
+            {"word": "Profitieren", "translation": "to profit"},
+            {"word": "Einschränkung", "translation": "restriction"}
+        ]
     },
     {
         "id": 312,
@@ -652,7 +962,11 @@ B2_QUESTIONS = [
         "theme": "Fake News & Media",
         "question": "Wie kann man erkennen, ob eine Nachricht wahr oder gefälscht ist?",
         "question_en": "How can one recognize if a news story is true or fake?",
-        "target_words": ["Quelle", "kritisch", "verbreiten"]
+        "target_words": [
+            {"word": "Quelle", "translation": "source"},
+            {"word": "kritisch", "translation": "critical"},
+            {"word": "verbreiten", "translation": "to spread"}
+        ]
     },
     {
         "id": 313,
@@ -660,7 +974,11 @@ B2_QUESTIONS = [
         "theme": "Hypothetical Politics",
         "question": "Wenn du Bundeskanzler wärst, welches Gesetz würdest du sofort einführen?",
         "question_en": "If you were Chancellor, which law would you introduce immediately?",
-        "target_words": ["ändern", "Regierung", "Priorität"]
+        "target_words": [
+            {"word": "ändern", "translation": "to change"},
+            {"word": "Regierung", "translation": "government"},
+            {"word": "Priorität", "translation": "priority"}
+        ]
     },
     {
         "id": 314,
@@ -668,7 +986,11 @@ B2_QUESTIONS = [
         "theme": "Language & Culture",
         "question": "Verliert man seine kulturelle Identität, wenn man in einem anderen Land lebt?",
         "question_en": "Do you lose your cultural identity when you live in another country?",
-        "target_words": ["Integration", "Wurzeln", "anpassen"]
+        "target_words": [
+            {"word": "Integration", "translation": "integration"},
+            {"word": "Wurzeln", "translation": "roots"},
+            {"word": "anpassen", "translation": "to adapt"}
+        ]
     },
     {
         "id": 315,
@@ -676,7 +998,11 @@ B2_QUESTIONS = [
         "theme": "Volunteer Work (Compulsory)",
         "question": "Sollte ein soziales Jahr für junge Menschen nach der Schule verpflichtend sein?",
         "question_en": "Should a social gap year be mandatory for young people after school?",
-        "target_words": ["Gemeinschaft", "Pflicht", "Reife"]
+        "target_words": [
+            {"word": "Gemeinschaft", "translation": "community"},
+            {"word": "Pflicht", "translation": "duty/obligation"},
+            {"word": "Reife", "translation": "maturity"}
+        ]
     },
     {
         "id": 316,
@@ -684,7 +1010,11 @@ B2_QUESTIONS = [
         "theme": "Cash vs. Digital Payment",
         "question": "Sollte Bargeld in Zukunft komplett abgeschafft werden?",
         "question_en": "Should cash be completely abolished in the future?",
-        "target_words": ["Zahlungsmittel", "Kontrolle", "bequem"]
+        "target_words": [
+            {"word": "Zahlungsmittel", "translation": "means of payment"},
+            {"word": "Kontrolle", "translation": "control"},
+            {"word": "bequem", "translation": "convenient"}
+        ]
     },
     {
         "id": 317,
@@ -692,7 +1022,11 @@ B2_QUESTIONS = [
         "theme": "Genetic Engineering",
         "question": "Ist Gentechnik in der Landwirtschaft eine Lösung für den Welthunger oder ein Risiko?",
         "question_en": "Is genetic engineering in agriculture a solution for world hunger or a risk?",
-        "target_words": ["modifiziert", "Ernährung", "unabsehbar"]
+        "target_words": [
+            {"word": "modifiziert", "translation": "modified"},
+            {"word": "Ernährung", "translation": "nutrition"},
+            {"word": "unabsehbar", "translation": "unforeseeable"}
+        ]
     },
     {
         "id": 318,
@@ -700,7 +1034,11 @@ B2_QUESTIONS = [
         "theme": "Success Definition",
         "question": "Wie definierst du persönlichen Erfolg? Ist er nur materiell messbar?",
         "question_en": "How do you define personal success? Is it only measurably materially?",
-        "target_words": ["Zufriedenheit", "Status", "erreichen"]
+        "target_words": [
+            {"word": "Zufriedenheit", "translation": "satisfaction"},
+            {"word": "Status", "translation": "status"},
+            {"word": "erreichen", "translation": "to achieve"}
+        ]
     },
     {
         "id": 319,
@@ -708,7 +1046,11 @@ B2_QUESTIONS = [
         "theme": "Aging Society",
         "question": "Welche Probleme entstehen durch den demografischen Wandel?",
         "question_en": "What problems arise from demographic change?",
-        "target_words": ["Rente", "Pflegekräfte", "Generationenvertrag"]
+        "target_words": [
+            {"word": "Rente", "translation": "pension"},
+            {"word": "Pflegekräfte", "translation": "caregivers"},
+            {"word": "Generationenvertrag", "translation": "generational contract"}
+        ]
     },
     {
         "id": 320,
@@ -716,7 +1058,11 @@ B2_QUESTIONS = [
         "theme": "Learning Methods",
         "question": "Kann man eine Fremdsprache nur mit Apps wirklich fließend lernen?",
         "question_en": "Can one really learn a foreign language fluently using only apps?",
-        "target_words": ["Interaktion", "Disziplin", "ergänzen"]
+        "target_words": [
+            {"word": "Interaktion", "translation": "interaction"},
+            {"word": "Disziplin", "translation": "discipline"},
+            {"word": "ergänzen", "translation": "to supplement"}
+        ]
     },
     {
         "id": 321,
@@ -724,7 +1070,11 @@ B2_QUESTIONS = [
         "theme": "Advertising Influence",
         "question": "Inwieweit beeinflusst Werbung unser Kaufverhalten?",
         "question_en": "To what extent does advertising influence our buying behavior?",
-        "target_words": ["manipulieren", "Marke", "Unterbewusstsein"]
+        "target_words": [
+            {"word": "manipulieren", "translation": "to manipulate"},
+            {"word": "Marke", "translation": "brand"},
+            {"word": "Unterbewusstsein", "translation": "subconscious"}
+        ]
     },
     {
         "id": 322,
@@ -732,7 +1082,11 @@ B2_QUESTIONS = [
         "theme": "Nuclear Power",
         "question": "Ist Atomkraft eine notwendige Brückentechnologie oder zu gefährlich?",
         "question_en": "Is nuclear power a necessary bridging technology or too dangerous?",
-        "target_words": ["Energieversorgung", "Atommüll", "Risiko"]
+        "target_words": [
+            {"word": "Energieversorgung", "translation": "energy supply"},
+            {"word": "Atommüll", "translation": "nuclear waste"},
+            {"word": "Risiko", "translation": "risk"}
+        ]
     },
     {
         "id": 323,
@@ -740,7 +1094,11 @@ B2_QUESTIONS = [
         "theme": "Art and Vandalism",
         "question": "Ist Graffiti Kunst oder Sachbeschädigung?",
         "question_en": "Is graffiti art or property damage?",
-        "target_words": ["Ausdrucksform", "illegal", "Stadtbild"]
+        "target_words": [
+            {"word": "Ausdrucksform", "translation": "form of expression"},
+            {"word": "illegal", "translation": "illegal"},
+            {"word": "Stadtbild", "translation": "cityscape"}
+        ]
     },
     {
         "id": 324,
@@ -748,7 +1106,11 @@ B2_QUESTIONS = [
         "theme": "Universal Basic Income",
         "question": "Was hältst du von der Idee eines bedingungslosen Grundeinkommens?",
         "question_en": "What do you think of the idea of a universal basic income?",
-        "target_words": ["Finanzierung", "Motivation", "Existenzminimum"]
+        "target_words": [
+            {"word": "Finanzierung", "translation": "financing"},
+            {"word": "Motivation", "translation": "motivation"},
+            {"word": "Existenzminimum", "translation": "subsistence level"}
+        ]
     },
     {
         "id": 325,
@@ -756,7 +1118,11 @@ B2_QUESTIONS = [
         "theme": "Friendship vs. Networking",
         "question": "Ist 'Networking' nur eine moderne Form der Freundschaft oder reines Geschäft?",
         "question_en": "Is 'networking' just a modern form of friendship or purely business?",
-        "target_words": ["Beziehung", "Nutzen", "oberflächlich"]
+        "target_words": [
+            {"word": "Beziehung", "translation": "relationship"},
+            {"word": "Nutzen", "translation": "benefit"},
+            {"word": "oberflächlich", "translation": "superficial"}
+        ]
     }
 ]
 
@@ -767,7 +1133,11 @@ C1_QUESTIONS = [
         "theme": "Censorship & Free Speech",
         "question": "Wo endet die Meinungsfreiheit und wo beginnt Hate Speech? Nimm Stellung zur 'Cancel Culture'.",
         "question_en": "Where does freedom of speech end and hate speech begin? Take a stand on 'cancel culture'.",
-        "target_words": ["Zensur", "Diskurs", "Konsequenz"]
+        "target_words": [
+            {"word": "Zensur", "translation": "censorship"},
+            {"word": "Diskurs", "translation": "discourse"},
+            {"word": "Konsequenz", "translation": "consequence"}
+        ]
     },
     {
         "id": 402,
@@ -775,7 +1145,11 @@ C1_QUESTIONS = [
         "theme": "Bioethics (Gene Editing)",
         "question": "Ist es ethisch vertretbar, das Erbgut von Menschen zu verändern, um Krankheiten zu heilen?",
         "question_en": "Is it ethically justifiable to alter human genetics to cure diseases?",
-        "target_words": ["Eingriff", "kontrovers", "unabsehbar"]
+        "target_words": [
+            {"word": "Eingriff", "translation": "intervention"},
+            {"word": "kontrovers", "translation": "controversial"},
+            {"word": "unabsehbar", "translation": "unforeseeable"}
+        ]
     },
     {
         "id": 403,
@@ -783,7 +1157,11 @@ C1_QUESTIONS = [
         "theme": "Gentrification",
         "question": "Wie verändert die Gentrifizierung das soziale Gefüge einer Stadt?",
         "question_en": "How does gentrification change the social fabric of a city?",
-        "target_words": ["Verdrängung", "Aufwertung", "Wohnraum"]
+        "target_words": [
+            {"word": "Verdrängung", "translation": "displacement"},
+            {"word": "Aufwertung", "translation": "upgrading"},
+            {"word": "Wohnraum", "translation": "living space"}
+        ]
     },
     {
         "id": 404,
@@ -791,7 +1169,11 @@ C1_QUESTIONS = [
         "theme": "Work Ethic & 4-Day Week",
         "question": "Führt eine Verkürzung der Arbeitszeit zu mehr Produktivität oder zu Wohlstandsverlust?",
         "question_en": "Does reducing working hours lead to more productivity or a loss of prosperity?",
-        "target_words": ["Effizienz", "Auswirkung", "umsetzen"]
+        "target_words": [
+            {"word": "Effizienz", "translation": "efficiency"},
+            {"word": "Auswirkung", "translation": "impact"},
+            {"word": "umsetzen", "translation": "to implement"}
+        ]
     },
     {
         "id": 405,
@@ -799,7 +1181,11 @@ C1_QUESTIONS = [
         "theme": "Artificial Intelligence & Ethics",
         "question": "Sollten wir KI-Systemen moralische Entscheidungen überlassen (z.B. beim autonomen Fahren)?",
         "question_en": "Should we leave moral decisions to AI systems (e.g., in autonomous driving)?",
-        "target_words": ["Dilemma", "Verantwortung", "programmieren"]
+        "target_words": [
+            {"word": "Dilemma", "translation": "dilemma"},
+            {"word": "Verantwortung", "translation": "responsibility"},
+            {"word": "programmieren", "translation": "to program"}
+        ]
     },
     {
         "id": 406,
@@ -807,7 +1193,11 @@ C1_QUESTIONS = [
         "theme": "Language Evolution",
         "question": "Verdirbt die Jugendsprache oder der Einfluss des Englischen die deutsche Sprache?",
         "question_en": "Does youth slang or the influence of English spoil the German language?",
-        "target_words": ["Sprachwandel", "bereichern", "verfallen"]
+        "target_words": [
+            {"word": "Sprachwandel", "translation": "language change"},
+            {"word": "bereichern", "translation": "to enrich"},
+            {"word": "verfallen", "translation": "to decay"}
+        ]
     },
     {
         "id": 407,
@@ -815,7 +1205,11 @@ C1_QUESTIONS = [
         "theme": "Globalization vs. Localization",
         "question": "Führt die Globalisierung zu einer kulturellen Einheitsbrei oder fördert sie den Austausch?",
         "question_en": "Does globalization lead to cultural uniformity or does it promote exchange?",
-        "target_words": ["Homogenisierung", "Identität", "bewahren"]
+        "target_words": [
+            {"word": "Homogenisierung", "translation": "homogenization"},
+            {"word": "Identität", "translation": "identity"},
+            {"word": "bewahren", "translation": "to preserve"}
+        ]
     },
     {
         "id": 408,
@@ -823,7 +1217,11 @@ C1_QUESTIONS = [
         "theme": "The Role of Arts",
         "question": "Ist Kunst systemrelevant oder ein Luxusgut, das man in Krisenzeiten vernachlässigen kann?",
         "question_en": "Is art systematically relevant or a luxury good that can be neglected in times of crisis?",
-        "target_words": ["subventionieren", "kulturell", "Ausdrucksform"]
+        "target_words": [
+            {"word": "subventionieren", "translation": "to subsidize"},
+            {"word": "kulturell", "translation": "cultural"},
+            {"word": "Ausdrucksform", "translation": "form of expression"}
+        ]
     },
     {
         "id": 409,
@@ -831,7 +1229,11 @@ C1_QUESTIONS = [
         "theme": "Educational Equality",
         "question": "Hängt der Bildungserfolg in Deutschland zu stark von der sozialen Herkunft ab?",
         "question_en": "Does educational success in Germany depend too heavily on social background?",
-        "target_words": ["Chancengleichheit", "benachteiligen", "Elite"]
+        "target_words": [
+            {"word": "Chancengleichheit", "translation": "equal opportunity"},
+            {"word": "benachteiligen", "translation": "to disadvantage"},
+            {"word": "Elite", "translation": "elite"}
+        ]
     },
     {
         "id": 410,
@@ -839,7 +1241,11 @@ C1_QUESTIONS = [
         "theme": "Surveillance vs. Security",
         "question": "Rechtfertigt die Terrorbekämpfung die massenhafte Überwachung von Bürgern?",
         "question_en": "Does fighting terrorism justify the mass surveillance of citizens?",
-        "target_words": ["Privatsphäre", "Eingriff", "verhältnismäßig"]
+        "target_words": [
+            {"word": "Privatsphäre", "translation": "privacy"},
+            {"word": "Eingriff", "translation": "intervention"},
+            {"word": "verhältnismäßig", "translation": "proportionate"}
+        ]
     },
     {
         "id": 411,
@@ -847,7 +1253,11 @@ C1_QUESTIONS = [
         "theme": "Migration & Integration",
         "question": "Was bedeutet 'gelungene Integration' für dich? Ist Assimilation notwendig?",
         "question_en": "What does 'successful integration' mean to you? Is assimilation necessary?",
-        "target_words": ["Parallelgesellschaft", "Teilhabe", "Vielfalt"]
+        "target_words": [
+            {"word": "Parallelgesellschaft", "translation": "parallel society"},
+            {"word": "Teilhabe", "translation": "participation"},
+            {"word": "Vielfalt", "translation": "diversity"}
+        ]
     },
     {
         "id": 412,
@@ -855,7 +1265,11 @@ C1_QUESTIONS = [
         "theme": "Space Exploration",
         "question": "Sollten Milliarden in die Raumfahrt investiert werden, solange wir Probleme auf der Erde haben?",
         "question_en": "Should billions be invested in space travel as long as we have problems on Earth?",
-        "target_words": ["Ressourcen", "rechtfertigen", "Forschung"]
+        "target_words": [
+            {"word": "Ressourcen", "translation": "resources"},
+            {"word": "rechtfertigen", "translation": "to justify"},
+            {"word": "Forschung", "translation": "research"}
+        ]
     },
     {
         "id": 413,
@@ -863,7 +1277,11 @@ C1_QUESTIONS = [
         "theme": "Sustainable Economy",
         "question": "Ist ewiges Wirtschaftswachstum in einer Welt mit begrenzten Ressourcen möglich?",
         "question_en": "Is eternal economic growth possible in a world with limited resources?",
-        "target_words": ["Nachhaltigkeit", "Widerspruch", "Konsumverhalten"]
+        "target_words": [
+            {"word": "Nachhaltigkeit", "translation": "sustainability"},
+            {"word": "Widerspruch", "translation": "contradiction"},
+            {"word": "Konsumverhalten", "translation": "consumer behavior"}
+        ]
     },
     {
         "id": 414,
@@ -871,7 +1289,11 @@ C1_QUESTIONS = [
         "theme": "Gender Quotas",
         "question": "Sind Frauenquoten in Führungspositionen ein notwendiges Übel oder der falsche Weg?",
         "question_en": "Are gender quotas in leadership positions a necessary evil or the wrong path?",
-        "target_words": ["Kompetenz", "diskriminieren", "Gleichstellung"]
+        "target_words": [
+            {"word": "Kompetenz", "translation": "competence"},
+            {"word": "diskriminieren", "translation": "to discriminate"},
+            {"word": "Gleichstellung", "translation": "equality"}
+        ]
     },
     {
         "id": 415,
@@ -879,7 +1301,11 @@ C1_QUESTIONS = [
         "theme": "Digital Detox & Mental Health",
         "question": "Welche psychologischen Langzeitfolgen hat die ständige digitale Erreichbarkeit?",
         "question_en": "What are the long-term psychological consequences of constant digital availability?",
-        "target_words": ["Reizüberflutung", "Aufmerksamkeit", "entschleunigen"]
+        "target_words": [
+            {"word": "Reizüberflutung", "translation": "sensory overload"},
+            {"word": "Aufmerksamkeit", "translation": "attention"},
+            {"word": "entschleunigen", "translation": "to slow down"}
+        ]
     },
     {
         "id": 416,
@@ -887,7 +1313,11 @@ C1_QUESTIONS = [
         "theme": "Scientific Skepticism",
         "question": "Warum verlieren viele Menschen das Vertrauen in die Wissenschaft und Fakten?",
         "question_en": "Why are many people losing trust in science and facts?",
-        "target_words": ["Verschwörungstheorie", "Objektivität", "Skepsis"]
+        "target_words": [
+            {"word": "Verschwörungstheorie", "translation": "conspiracy theory"},
+            {"word": "Objektivität", "translation": "objectivity"},
+            {"word": "Skepsis", "translation": "skepticism"}
+        ]
     },
     {
         "id": 417,
@@ -895,7 +1325,11 @@ C1_QUESTIONS = [
         "theme": "Prison System",
         "question": "Sollte der Strafvollzug eher auf Bestrafung oder auf Resozialisierung setzen?",
         "question_en": "Should the penal system focus more on punishment or on rehabilitation?",
-        "target_words": ["Rückfallquote", "Gesellschaft", "Sühne"]
+        "target_words": [
+            {"word": "Rückfallquote", "translation": "recidivism rate"},
+            {"word": "Gesellschaft", "translation": "society"},
+            {"word": "Sühne", "translation": "atonement"}
+        ]
     },
     {
         "id": 418,
@@ -903,7 +1337,11 @@ C1_QUESTIONS = [
         "theme": "Urban Mobility",
         "question": "Wie sieht die Stadt der Zukunft ohne private PKWs aus?",
         "question_en": "What does the city of the future look like without private cars?",
-        "target_words": ["Infrastruktur", "Lebensqualität", "Emissionen"]
+        "target_words": [
+            {"word": "Infrastruktur", "translation": "infrastructure"},
+            {"word": "Lebensqualität", "translation": "quality of life"},
+            {"word": "Emissionen", "translation": "emissions"}
+        ]
     },
     {
         "id": 419,
@@ -911,7 +1349,11 @@ C1_QUESTIONS = [
         "theme": "Consumer Responsibility",
         "question": "Kann der einzelne Konsument die Welt retten oder braucht es politische Verbote?",
         "question_en": "Can the individual consumer save the world or are political bans needed?",
-        "target_words": ["Einfluss", "regulieren", "Machtlosigkeit"]
+        "target_words": [
+            {"word": "Einfluss", "translation": "influence"},
+            {"word": "regulieren", "translation": "to regulate"},
+            {"word": "Machtlosigkeit", "translation": "powerlessness"}
+        ]
     },
     {
         "id": 420,
@@ -919,7 +1361,11 @@ C1_QUESTIONS = [
         "theme": "Intergenerational Conflict",
         "question": "Werden die Ressourcen fair zwischen den Generationen verteilt (Rente, Klima)?",
         "question_en": "Are resources distributed fairly between generations (pension, climate)?",
-        "target_words": ["Solidarität", "Last", "Gerechtigkeit"]
+        "target_words": [
+            {"word": "Solidarität", "translation": "solidarity"},
+            {"word": "Last", "translation": "burden"},
+            {"word": "Gerechtigkeit", "translation": "justice"}
+        ]
     },
     {
         "id": 421,
@@ -927,7 +1373,11 @@ C1_QUESTIONS = [
         "theme": "Leadership Styles",
         "question": "Was zeichnet eine moderne Führungskraft aus: Autorität oder Empathie?",
         "question_en": "What characterizes a modern leader: authority or empathy?",
-        "target_words": ["Hierarchie", "motivieren", "auf Augenhöhe"]
+        "target_words": [
+            {"word": "Hierarchie", "translation": "hierarchy"},
+            {"word": "motivieren", "translation": "to motivate"},
+            {"word": "auf Augenhöhe", "translation": "on equal footing"}
+        ]
     },
     {
         "id": 422,
@@ -935,7 +1385,11 @@ C1_QUESTIONS = [
         "theme": "Media Literacy",
         "question": "Sollte Medienkompetenz ein Pflichtfach an allen Schulen sein?",
         "question_en": "Should media literacy be a compulsory subject in all schools?",
-        "target_words": ["analysieren", "manipulativ", "Lehrplan"]
+        "target_words": [
+            {"word": "analysieren", "translation": "to analyze"},
+            {"word": "manipulativ", "translation": "manipulative"},
+            {"word": "Lehrplan", "translation": "curriculum"}
+        ]
     },
     {
         "id": 423,
@@ -943,7 +1397,11 @@ C1_QUESTIONS = [
         "theme": "Alternative Medicine",
         "question": "Sollten Krankenkassen auch alternative Heilmethoden (z.B. Homöopathie) bezahlen?",
         "question_en": "Should health insurance companies also pay for alternative healing methods (e.g., homeopathy)?",
-        "target_words": ["Wirksamkeit", "Placebo", "schulmedizinisch"]
+        "target_words": [
+            {"word": "Wirksamkeit", "translation": "effectiveness"},
+            {"word": "Placebo", "translation": "placebo"},
+            {"word": "schulmedizinisch", "translation": "conventional medicine"}
+        ]
     },
     {
         "id": 424,
@@ -951,7 +1409,11 @@ C1_QUESTIONS = [
         "theme": "Patriotism vs. Nationalism",
         "question": "Ist Patriotismus in einer globalisierten Welt noch zeitgemäß?",
         "question_en": "Is patriotism still appropriate in a globalized world?",
-        "target_words": ["Zugehörigkeit", "Grenze", "stolz"]
+        "target_words": [
+            {"word": "Zugehörigkeit", "translation": "belonging"},
+            {"word": "Grenze", "translation": "border"},
+            {"word": "stolz", "translation": "proud"}
+        ]
     },
     {
         "id": 425,
@@ -959,7 +1421,11 @@ C1_QUESTIONS = [
         "theme": "Minimalism",
         "question": "Ist Minimalismus ein privilegierter Lifestyle oder eine Antwort auf den Kapitalismus?",
         "question_en": "Is minimalism a privileged lifestyle or an answer to capitalism?",
-        "target_words": ["Überfluss", "verzichten", "Fokus"]
+        "target_words": [
+            {"word": "Überfluss", "translation": "excess"},
+            {"word": "verzichten", "translation": "to renounce"},
+            {"word": "Fokus", "translation": "focus"}
+        ]
     }
 ]
 
@@ -970,7 +1436,11 @@ C2_QUESTIONS = [
         "theme": "Linguistic Relativity",
         "question": "Inwiefern bestimmt die Struktur unserer Sprache die Art und Weise, wie wir die Welt wahrnehmen (Sapir-Whorf-Hypothese)?",
         "question_en": "To what extent does the structure of our language determine the way we perceive the world (Sapir-Whorf hypothesis)?",
-        "target_words": ["kognitiv", "Determinismus", "implizieren"]
+        "target_words": [
+            {"word": "kognitiv", "translation": "cognitive"},
+            {"word": "Determinismus", "translation": "determinism"},
+            {"word": "implizieren", "translation": "to imply"}
+        ]
     },
     {
         "id": 502,
@@ -978,7 +1448,11 @@ C2_QUESTIONS = [
         "theme": "The Crisis of Democracy",
         "question": "Erleben wir aktuell eine Erosion demokratischer Werte oder lediglich einen notwendigen Transformationsprozess?",
         "question_en": "Are we currently experiencing an erosion of democratic values or merely a necessary transformation process?",
-        "target_words": ["Resilienz", "populistisch", "polarisieren"]
+        "target_words": [
+            {"word": "Resilienz", "translation": "resilience"},
+            {"word": "populistisch", "translation": "populist"},
+            {"word": "polarisieren", "translation": "to polarize"}
+        ]
     },
     {
         "id": 503,
@@ -986,7 +1460,11 @@ C2_QUESTIONS = [
         "theme": "Philosophy of Artificial Intelligence",
         "question": "Wenn eine KI ein Bewusstsein entwickelt, müssen wir ihr dann Menschenrechte zugestehen?",
         "question_en": "If an AI develops consciousness, must we then grant it human rights?",
-        "target_words": ["Empfindungsfähigkeit", "ethisch", "Subjektstatus"]
+        "target_words": [
+            {"word": "Empfindungsfähigkeit", "translation": "sentience"},
+            {"word": "ethisch", "translation": "ethical"},
+            {"word": "Subjektstatus", "translation": "subject status"}
+        ]
     },
     {
         "id": 504,
@@ -994,7 +1472,11 @@ C2_QUESTIONS = [
         "theme": "The Illusion of Meritocracy",
         "question": "Ist die Meritokratie (Leistungsgesellschaft) ein gerechtes Ideal oder ein Mythos, der Ungleichheit verschleiert?",
         "question_en": "Is meritocracy a just ideal or a myth that disguises inequality?",
-        "target_words": ["Privileg", "Chancengerechtigkeit", "reproduzieren"]
+        "target_words": [
+            {"word": "Privileg", "translation": "privilege"},
+            {"word": "Chancengerechtigkeit", "translation": "equal opportunity"},
+            {"word": "reproduzieren", "translation": "to reproduce"}
+        ]
     },
     {
         "id": 505,
@@ -1002,7 +1484,11 @@ C2_QUESTIONS = [
         "theme": "Degrowth Economics",
         "question": "Ist das Konzept der Postwachstumsökonomie eine realistische Alternative zum Kapitalismus oder eine Utopie?",
         "question_en": "Is the concept of degrowth economics a realistic alternative to capitalism or a utopia?",
-        "target_words": ["Ressourcenknappheit", "Wohlstand", "Paradigmenwechsel"]
+        "target_words": [
+            {"word": "Ressourcenknappheit", "translation": "resource scarcity"},
+            {"word": "Wohlstand", "translation": "prosperity"},
+            {"word": "Paradigmenwechsel", "translation": "paradigm shift"}
+        ]
     },
     {
         "id": 506,
@@ -1010,7 +1496,11 @@ C2_QUESTIONS = [
         "theme": "Algorithmic Bias",
         "question": "Wie verhindern wir, dass Algorithmen menschliche Vorurteile und Diskriminierung automatisieren?",
         "question_en": "How do we prevent algorithms from automating human prejudice and discrimination?",
-        "target_words": ["Voreingenommenheit", "Transparenz", "diskret"]
+        "target_words": [
+            {"word": "Voreingenommenheit", "translation": "bias"},
+            {"word": "Transparenz", "translation": "transparency"},
+            {"word": "diskret", "translation": "discrete"}
+        ]
     },
     {
         "id": 507,
@@ -1018,7 +1508,11 @@ C2_QUESTIONS = [
         "theme": "Transhumanism",
         "question": "Sollte der Mensch durch Technologie seine biologischen Grenzen überwinden (Transhumanismus)?",
         "question_en": "Should humans overcome their biological limits through technology (transhumanism)?",
-        "target_words": ["Evolution", "Optimierung", "Obsoleszenz"]
+        "target_words": [
+            {"word": "Evolution", "translation": "evolution"},
+            {"word": "Optimierung", "translation": "optimization"},
+            {"word": "Obsoleszenz", "translation": "obsolescence"}
+        ]
     },
     {
         "id": 508,
@@ -1026,7 +1520,11 @@ C2_QUESTIONS = [
         "theme": "Truth in the Post-Factual Era",
         "question": "Hat der Begriff der 'objektiven Wahrheit' im Zeitalter von Deepfakes und Echokammern ausgedient?",
         "question_en": "Has the concept of 'objective truth' become obsolete in the age of deepfakes and echo chambers?",
-        "target_words": ["Verifizierung", "Desinformation", "epistemisch"]
+        "target_words": [
+            {"word": "Verifizierung", "translation": "verification"},
+            {"word": "Desinformation", "translation": "disinformation"},
+            {"word": "epistemisch", "translation": "epistemic"}
+        ]
     },
     {
         "id": 509,
@@ -1034,7 +1532,11 @@ C2_QUESTIONS = [
         "theme": "Neocolonialism",
         "question": "Inwiefern setzen moderne Handelsstrukturen koloniale Abhängigkeitsverhältnisse fort?",
         "question_en": "To what extent do modern trade structures perpetuate colonial dependency relationships?",
-        "target_words": ["Ausbeutung", "Souveränität", "asymmetrisch"]
+        "target_words": [
+            {"word": "Ausbeutung", "translation": "exploitation"},
+            {"word": "Souveränität", "translation": "sovereignty"},
+            {"word": "asymmetrisch", "translation": "asymmetric"}
+        ]
     },
     {
         "id": 510,
@@ -1042,7 +1544,11 @@ C2_QUESTIONS = [
         "theme": "The Purpose of Art",
         "question": "Darf Kunst rein ästhetisch sein, oder hat sie die Pflicht, gesellschaftliche Missstände anzuprangern?",
         "question_en": "May art be purely aesthetic, or does it have the duty to denounce social grievances?",
-        "target_words": ["autonom", "Engagement", "diskursiv"]
+        "target_words": [
+            {"word": "autonom", "translation": "autonomous"},
+            {"word": "Engagement", "translation": "commitment"},
+            {"word": "diskursiv", "translation": "discursive"}
+        ]
     },
     {
         "id": 511,
@@ -1050,7 +1556,11 @@ C2_QUESTIONS = [
         "theme": "Universal Jurisdiction",
         "question": "Sollten Diktatoren vor internationalen Gerichten belangt werden können, auch wenn sie die Souveränität ihres Landes beanspruchen?",
         "question_en": "Should dictators be liable before international courts, even if they claim their country's sovereignty?",
-        "target_words": ["Immunität", "Völkerrecht", "Präzedenzfall"]
+        "target_words": [
+            {"word": "Immunität", "translation": "immunity"},
+            {"word": "Völkerrecht", "translation": "international law"},
+            {"word": "Präzedenzfall", "translation": "precedent"}
+        ]
     },
     {
         "id": 512,
@@ -1058,7 +1568,11 @@ C2_QUESTIONS = [
         "theme": "Genetic Engineering (Designer Babies)",
         "question": "Führt die Möglichkeit, das Erbgut von Embryonen zu bearbeiten, zwangsläufig zu einer Zweiklassengesellschaft?",
         "question_en": "Does the ability to edit the genome of embryos inevitably lead to a two-tier society?",
-        "target_words": ["Eugenik", "Selektion", "ethisch vertretbar"]
+        "target_words": [
+            {"word": "Eugenik", "translation": "eugenics"},
+            {"word": "Selektion", "translation": "selection"},
+            {"word": "ethisch vertretbar", "translation": "ethically justifiable"}
+        ]
     },
     {
         "id": 513,
@@ -1066,7 +1580,11 @@ C2_QUESTIONS = [
         "theme": "Urban Gentrification Nuances",
         "question": "Ist Gentrifizierung ein unvermeidbarer Nebeneffekt städtischer Entwicklung oder politisches Versagen?",
         "question_en": "Is gentrification an unavoidable side effect of urban development or political failure?",
-        "target_words": ["Segregation", "Revitalisierung", "sozioökonomisch"]
+        "target_words": [
+            {"word": "Segregation", "translation": "segregation"},
+            {"word": "Revitalisierung", "translation": "revitalization"},
+            {"word": "sozioökonomisch", "translation": "socioeconomic"}
+        ]
     },
     {
         "id": 514,
@@ -1074,7 +1592,11 @@ C2_QUESTIONS = [
         "theme": "Identity Politics",
         "question": "Fördert Identitätspolitik die Inklusion oder führt sie zur Fragmentierung der Gesellschaft?",
         "question_en": "Does identity politics promote inclusion or lead to the fragmentation of society?",
-        "target_words": ["Partikularinteressen", "marginalisiert", "Solidarität"]
+        "target_words": [
+            {"word": "Partikularinteressen", "translation": "particular interests"},
+            {"word": "marginalisiert", "translation": "marginalized"},
+            {"word": "Solidarität", "translation": "solidarity"}
+        ]
     },
     {
         "id": 515,
@@ -1082,7 +1604,11 @@ C2_QUESTIONS = [
         "theme": "Work and Meaning",
         "question": "Wie definieren wir den Sinn des Lebens in einer Welt, in der Erwerbsarbeit zunehmend automatisiert wird?",
         "question_en": "How do we define the meaning of life in a world where gainful employment is increasingly automated?",
-        "target_words": ["Müßiggang", "Selbstverwirklichung", "Grundeinkommen"]
+        "target_words": [
+            {"word": "Müßiggang", "translation": "idleness"},
+            {"word": "Selbstverwirklichung", "translation": "self-actualization"},
+            {"word": "Grundeinkommen", "translation": "basic income"}
+        ]
     },
     {
         "id": 516,
@@ -1090,7 +1616,11 @@ C2_QUESTIONS = [
         "theme": "Privacy vs. Public Health",
         "question": "War die Einschränkung von Freiheitsrechten während der Pandemie verhältnismäßig?",
         "question_en": "Was the restriction of civil liberties during the pandemic proportionate?",
-        "target_words": ["Grundrechte", "Abwägung", "Prävention"]
+        "target_words": [
+            {"word": "Grundrechte", "translation": "fundamental rights"},
+            {"word": "Abwägung", "translation": "weighing/balancing"},
+            {"word": "Prävention", "translation": "prevention"}
+        ]
     },
     {
         "id": 517,
@@ -1098,7 +1628,11 @@ C2_QUESTIONS = [
         "theme": "Diplomacy vs. Conflict",
         "question": "Ist 'Soft Power' (kulturelle Attraktivität) heute wirkungsvoller als militärische Stärke?",
         "question_en": "Is 'soft power' (cultural attractiveness) more effective today than military strength?",
-        "target_words": ["Diplomatie", "Einflusssphäre", "sanktionieren"]
+        "target_words": [
+            {"word": "Diplomatie", "translation": "diplomacy"},
+            {"word": "Einflusssphäre", "translation": "sphere of influence"},
+            {"word": "sanktionieren", "translation": "to sanction"}
+        ]
     },
     {
         "id": 518,
@@ -1106,7 +1640,11 @@ C2_QUESTIONS = [
         "theme": "Educational Philosophy",
         "question": "Sollte Bildung dem Humboldtschen Ideal der Persönlichkeitsbildung folgen oder rein arbeitsmarktorientiert sein?",
         "question_en": "Should education follow the Humboldtian ideal of character formation or be purely labor market oriented?",
-        "target_words": ["utilitaristisch", "Bildungsideal", "Kompetenz"]
+        "target_words": [
+            {"word": "utilitaristisch", "translation": "utilitarian"},
+            {"word": "Bildungsideal", "translation": "educational ideal"},
+            {"word": "Kompetenz", "translation": "competence"}
+        ]
     },
     {
         "id": 519,
@@ -1114,7 +1652,11 @@ C2_QUESTIONS = [
         "theme": "Corporate Social Responsibility",
         "question": "Ist CSR (Corporate Social Responsibility) meistens nur 'Greenwashing' oder ein echter Wandel?",
         "question_en": "Is CSR mostly just 'greenwashing' or a real change?",
-        "target_words": ["Imagepflege", "Glaubwürdigkeit", "Profitmaximierung"]
+        "target_words": [
+            {"word": "Imagepflege", "translation": "image cultivation"},
+            {"word": "Glaubwürdigkeit", "translation": "credibility"},
+            {"word": "Profitmaximierung", "translation": "profit maximization"}
+        ]
     },
     {
         "id": 520,
@@ -1122,7 +1664,11 @@ C2_QUESTIONS = [
         "theme": "The Death of the Author",
         "question": "Sollte man das Werk eines Künstlers getrennt von seiner moralischen Verfehlung als Person betrachten?",
         "question_en": "Should one view an artist's work separately from their moral misconduct as a person?",
-        "target_words": ["boykottieren", "Rezeption", "Differenzierung"]
+        "target_words": [
+            {"word": "boykottieren", "translation": "to boycott"},
+            {"word": "Rezeption", "translation": "reception"},
+            {"word": "Differenzierung", "translation": "differentiation"}
+        ]
     },
     {
         "id": 521,
@@ -1130,7 +1676,11 @@ C2_QUESTIONS = [
         "theme": "Surveillance Capitalism",
         "question": "Haben wir die Kontrolle über unsere persönlichen Daten im Zeitalter des Überwachungskapitalismus unwiderruflich verloren?",
         "question_en": "Have we irrevocably lost control over our personal data in the age of surveillance capitalism?",
-        "target_words": ["Kommodifizierung", "Verhaltensvorhersage", "Autonomie"]
+        "target_words": [
+            {"word": "Kommodifizierung", "translation": "commodification"},
+            {"word": "Verhaltensvorhersage", "translation": "behavior prediction"},
+            {"word": "Autonomie", "translation": "autonomy"}
+        ]
     },
     {
         "id": 522,
@@ -1138,7 +1688,11 @@ C2_QUESTIONS = [
         "theme": "Cryptocurrencies",
         "question": "Stellen Kryptowährungen eine Demokratisierung des Finanzwesens dar oder ein spekulatives Risiko?",
         "question_en": "Do cryptocurrencies represent a democratization of finance or a speculative risk?",
-        "target_words": ["dezentral", "Volatilität", "Regulierung"]
+        "target_words": [
+            {"word": "dezentral", "translation": "decentralized"},
+            {"word": "Volatilität", "translation": "volatility"},
+            {"word": "Regulierung", "translation": "regulation"}
+        ]
     },
     {
         "id": 523,
@@ -1146,7 +1700,11 @@ C2_QUESTIONS = [
         "theme": "Globalization of Culture",
         "question": "Führt die globale Dominanz der englischen Sprache zum Aussterben kleinerer Sprachen und Denkweisen?",
         "question_en": "Does the global dominance of the English language lead to the extinction of smaller languages and ways of thinking?",
-        "target_words": ["Hegemonie", "Sprachtod", "kulturelles Erbe"]
+        "target_words": [
+            {"word": "Hegemonie", "translation": "hegemony"},
+            {"word": "Sprachtod", "translation": "language death"},
+            {"word": "kulturelles Erbe", "translation": "cultural heritage"}
+        ]
     },
     {
         "id": 524,
@@ -1154,7 +1712,11 @@ C2_QUESTIONS = [
         "theme": "Utilitarianism vs. Deontology",
         "question": "Darf man wenige Menschen opfern, um viele zu retten? (Das Trolley-Problem im echten Leben)",
         "question_en": "May one sacrifice a few people to save many? (The trolley problem in real life)",
-        "target_words": ["moralisch", "quantifizieren", "Prinzipienethik"]
+        "target_words": [
+            {"word": "moralisch", "translation": "moral"},
+            {"word": "quantifizieren", "translation": "to quantify"},
+            {"word": "Prinzipienethik", "translation": "deontological ethics"}
+        ]
     },
     {
         "id": 525,
@@ -1162,7 +1724,11 @@ C2_QUESTIONS = [
         "theme": "Historical Revisionism",
         "question": "Wie sollten Nationen mit den dunklen Kapiteln ihrer Geschichte umgehen: Verdrängen oder Aufarbeiten?",
         "question_en": "How should nations deal with the dark chapters of their history: repress or process?",
-        "target_words": ["Erinnerungskultur", "kollektives Gedächtnis", "Verantwortung"]
+        "target_words": [
+            {"word": "Erinnerungskultur", "translation": "culture of remembrance"},
+            {"word": "kollektives Gedächtnis", "translation": "collective memory"},
+            {"word": "Verantwortung", "translation": "responsibility"}
+        ]
     }
 ]
 

@@ -3,6 +3,12 @@ from typing import List, Optional
 from datetime import datetime
 
 
+class TargetWordInQuestion(BaseModel):
+    """A target word stored within a speaking question."""
+    word: str = Field(description="The German word")
+    translation: str = Field(description="English translation")
+
+
 class SpeakingQuestionInDB(BaseModel):
     """A speaking practice question stored in the database."""
     id: int = Field(description="Unique identifier for the question")
@@ -10,7 +16,7 @@ class SpeakingQuestionInDB(BaseModel):
     theme: str = Field(description="Theme/topic of the question (e.g., 'Introduction', 'Hobbies')")
     question: str = Field(description="The question text in German")
     question_en: str = Field(description="English translation of the question")
-    target_words: List[str] = Field(description="List of target vocabulary words for this question")
+    target_words: List[TargetWordInQuestion] = Field(description="List of target vocabulary words with translations")
 
 
 class SpeakingQuestionResponse(BaseModel):

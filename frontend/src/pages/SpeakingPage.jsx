@@ -69,11 +69,22 @@ const Badge = ({ children, type = 'neutral' }) => {
 
 // --- Main Component ---
 
+// CEFR Level descriptions
+const LEVEL_INFO = {
+    A1: { name: 'Beginner', description: 'Basic phrases and introductions', color: 'emerald' },
+    A2: { name: 'Elementary', description: 'Daily situations and past tense', color: 'teal' },
+    B1: { name: 'Intermediate', description: 'Opinions and experiences', color: 'blue' },
+    B2: { name: 'Upper Intermediate', description: 'Abstract topics and debates', color: 'indigo' },
+    C1: { name: 'Advanced', description: 'Complex social issues', color: 'violet' },
+    C2: { name: 'Mastery', description: 'Philosophy and nuanced debates', color: 'purple' }
+};
+
 export default function SpeakingPage() {
     const navigate = useNavigate();
     
     // State
-    const [status, setStatus] = useState('loading'); // loading, idle, recording, processing, feedback, error
+    const [status, setStatus] = useState('select-level'); // select-level, loading, idle, recording, processing, feedback, error
+    const [selectedLevel, setSelectedLevel] = useState(null);
     const [timeLeft, setTimeLeft] = useState(60);
     const [bars, setBars] = useState(Array(12).fill(10));
     const [error, setError] = useState(null);
@@ -89,16 +100,11 @@ export default function SpeakingPage() {
     const analyserRef = useRef(null);
     const animationFrameRef = useRef(null);
 
-    // Fetch practice session on mount
-    useEffect(() => {
-        fetchPracticeSession();
-    }, []);
-
-    const fetchPracticeSession = async () => {
+    const fetchPracticeSession = async (level) => {
         setStatus('loading');
         setError(null);
         try {
-            const data = await speakingService.getPracticeSession();
+            const data = await speakingService.getPracticeSession({ level });
             setPracticeData(data);
             setStatus('idle');
         } catch (err) {
@@ -106,6 +112,11 @@ export default function SpeakingPage() {
             setError(err.message || 'Failed to load practice session. Please try again.');
             setStatus('error');
         }
+    };
+
+    const handleLevelSelect = (level) => {
+        setSelectedLevel(level);
+        fetchPracticeSession(level);
     };
 
     // Timer Logic
@@ -252,14 +263,78 @@ export default function SpeakingPage() {
     };
 
     const reset = () => {
-        setStatus('loading');
         setAnalysisResult(null);
         setTimeLeft(60);
         setError(null);
-        fetchPracticeSession();
+        if (selectedLevel) {
+            setStatus('loading');
+            fetchPracticeSession(selectedLevel);
+        } else {
+            setStatus('select-level');
+        }
+    };
+
+    const changeLevel = () => {
+        setStatus('select-level');
+        setSelectedLevel(null);
+        setPracticeData(null);
+        setAnalysisResult(null);
+        setTimeLeft(60);
+        setError(null);
     };
 
     // --- Render Stages ---
+
+    const renderLevelSelector = () => (
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-indigo-100 mb-4">
+                    <GraduationCap size={32} className="text-indigo-600" />
+                </div>
+                <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-800 mb-2">
+                    Choose Your Level
+                </h1>
+                <p className="text-slate-500 max-w-md mx-auto">
+                    Select your CEFR level to get questions matched to your proficiency
+                </p>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+                {Object.entries(LEVEL_INFO).map(([level, info]) => (
+                    <button
+                        key={level}
+                        onClick={() => handleLevelSelect(level)}
+                        className={`group relative p-6 rounded-xl border-2 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg
+                            ${selectedLevel === level 
+                                ? 'border-indigo-500 bg-indigo-50 shadow-md' 
+                                : 'border-slate-200 bg-white hover:border-indigo-300'
+                            }`}
+                    >
+                        <div className={`text-2xl font-extrabold mb-1 ${
+                            selectedLevel === level ? 'text-indigo-600' : 'text-slate-800 group-hover:text-indigo-600'
+                        }`}>
+                            {level}
+                        </div>
+                        <div className="text-sm font-semibold text-slate-600 mb-1">
+                            {info.name}
+                        </div>
+                        <div className="text-xs text-slate-400">
+                            {info.description}
+                        </div>
+                    </button>
+                ))}
+            </div>
+
+            <div className="text-center">
+                <button 
+                    onClick={() => navigate('/learning/speaking')} 
+                    className="text-slate-400 hover:text-indigo-600 text-sm font-semibold transition-colors"
+                >
+                    <ChevronRight size={16} className="inline rotate-180" /> Back to History
+                </button>
+            </div>
+        </div>
+    );
 
     const renderHeader = () => (
         <div className="flex justify-between items-start mb-8">
@@ -269,6 +344,18 @@ export default function SpeakingPage() {
                 </button>
                 <div className="flex items-center gap-3 mb-2">
                     <Badge type="indigo">Speaking Practice</Badge>
+                    {selectedLevel && (
+                        <>
+                            <span className="text-slate-400 text-sm font-semibold">•</span>
+                            <button 
+                                onClick={changeLevel}
+                                className="flex items-center gap-1 px-2 py-1 rounded-full bg-slate-100 text-slate-600 hover:bg-indigo-100 hover:text-indigo-600 transition-colors text-xs font-bold"
+                            >
+                                {selectedLevel} - {LEVEL_INFO[selectedLevel]?.name}
+                                <ChevronRight size={12} className="rotate-90" />
+                            </button>
+                        </>
+                    )}
                     <span className="text-slate-400 text-sm font-semibold">•</span>
                     <span className="text-slate-400 text-sm font-medium">Max 60 seconds</span>
                 </div>
@@ -306,12 +393,24 @@ export default function SpeakingPage() {
     const renderIdle = () => (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="bg-slate-50 rounded-xl p-8 mb-8 border border-slate-100">
+                {practiceData?.question?.theme && (
+                    <div className="flex items-center gap-2 mb-3">
+                        <span className="px-2 py-1 rounded-full bg-indigo-100 text-indigo-600 text-xs font-bold">
+                            {practiceData.question.theme}
+                        </span>
+                    </div>
+                )}
                 <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-4">
                     Your Question
                 </h2>
-                <p className="text-2xl md:text-3xl font-medium text-slate-700 leading-relaxed">
+                <p className="text-2xl md:text-3xl font-medium text-slate-700 leading-relaxed mb-4">
                     "{practiceData?.question?.text}"
                 </p>
+                {practiceData?.question?.text_en && (
+                    <p className="text-sm text-slate-400 italic">
+                        {practiceData.question.text_en}
+                    </p>
+                )}
             </div>
 
             <div className="space-y-4 mb-10">
@@ -498,8 +597,9 @@ export default function SpeakingPage() {
                 </div>
 
                 {/* Footer Actions */}
-                <div className="flex justify-center gap-4 py-4 border-t border-slate-100">
-                    <Button variant="secondary" onClick={reset} icon={RefreshCw}>Try Another</Button>
+                <div className="flex flex-wrap justify-center gap-4 py-4 border-t border-slate-100">
+                    <Button variant="secondary" onClick={reset} icon={RefreshCw}>Try Another ({selectedLevel})</Button>
+                    <Button variant="secondary" onClick={changeLevel} icon={GraduationCap}>Change Level</Button>
                     <Button variant="primary" onClick={() => navigate('/learning/speaking')} icon={ChevronRight}>View History</Button>
                 </div>
             </div>
@@ -509,7 +609,7 @@ export default function SpeakingPage() {
     return (
         <div className="w-full max-w-3xl mx-auto bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden relative transition-all duration-500">
             {/* Progress Bar (Top) */}
-            {status !== 'feedback' && status !== 'error' && (
+            {status !== 'feedback' && status !== 'error' && status !== 'select-level' && (
                 <div className="h-1 bg-slate-100 w-full">
                     <div
                         className="h-full bg-indigo-600 transition-all duration-300"
@@ -523,9 +623,10 @@ export default function SpeakingPage() {
             )}
 
             <div className="p-6 md:p-10">
-                {status !== 'feedback' && status !== 'loading' && status !== 'error' && renderHeader()}
+                {status !== 'feedback' && status !== 'loading' && status !== 'error' && status !== 'select-level' && renderHeader()}
 
                 <div className="min-h-[400px]">
+                    {status === 'select-level' && renderLevelSelector()}
                     {status === 'loading' && renderLoading()}
                     {status === 'error' && renderError()}
                     {status === 'idle' && practiceData && renderIdle()}
