@@ -1,5 +1,6 @@
-import { BookOpen, Briefcase, Coffee, Filter, GraduationCap, Heart, MoreHorizontal, Music, Plane, Plus, Star, X } from 'lucide-react';
+import { BookOpen, Briefcase, Coffee, Filter, GraduationCap, Heart, Layers, MoreHorizontal, Music, Plane, Star, X } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // --- Mock Data ---
 const DECKS = [
@@ -102,8 +103,13 @@ const ProgressBar = ({ progress }) => {
     );
 };
 
-const DeckCard = ({ deck }) => {
+const DeckCard = ({ deck, onStartFlashcards }) => {
     const Icon = deck.icon;
+
+    const handleStartFlashcards = (e) => {
+        e.stopPropagation();
+        onStartFlashcards(deck.level);
+    };
 
     return (
         <div className="group bg-white rounded-2xl border border-slate-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 overflow-hidden cursor-pointer flex flex-col h-full">
@@ -147,9 +153,12 @@ const DeckCard = ({ deck }) => {
                 <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between">
                     <LevelBadge level={deck.level} />
 
-                    <button className="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-400 flex items-center justify-center shadow-sm group-hover:bg-indigo-600 group-hover:border-indigo-600 group-hover:text-white transition-all duration-200 group-hover:scale-110 group-hover:shadow-md">
-                        {/* Changed from Play to Plus */}
-                        <Plus size={20} strokeWidth={2.5} />
+                    <button
+                        onClick={handleStartFlashcards}
+                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm text-sm font-medium"
+                    >
+                        <Layers size={16} />
+                        Flashcards
                     </button>
                 </div>
 
@@ -194,12 +203,17 @@ const Header = () => (
 // --- Main Page Component ---
 
 const DecksPage = () => {
+    const navigate = useNavigate();
     const [selectedLevel, setSelectedLevel] = useState(null);
     const [selectedTopic, setSelectedTopic] = useState(null);
 
     // Extract unique values for filters
     const levels = [...new Set(DECKS.map(d => d.level))].sort();
     const topics = [...new Set(DECKS.map(d => d.category))].sort();
+
+    const handleStartFlashcards = (level) => {
+        navigate(`/learning/words/${level}/flashcards`);
+    };
 
     // Filter Logic
     const filteredDecks = DECKS.filter(deck => {
@@ -276,7 +290,7 @@ const DecksPage = () => {
                 {/* Grid Container */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredDecks.map((deck) => (
-                        <DeckCard key={deck.id} deck={deck} />
+                        <DeckCard key={deck.id} deck={deck} onStartFlashcards={handleStartFlashcards} />
                     ))}
 
                     {/* "Create New" Placeholder Card - Only show if no filters or if looking for creation */}

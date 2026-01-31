@@ -1,9 +1,9 @@
 import {
     Book,
     Briefcase,
-    ChevronRight,
     Coffee,
     Filter,
+    Layers,
     Plane,
     Plus,
     Star,
@@ -101,6 +101,11 @@ const WordDecks = () => {
         navigate(`/learning/words/${deck.id}`);
     };
 
+    const onStartFlashcards = (e, deck) => {
+        e.stopPropagation();
+        navigate(`/learning/words/${deck.id}/flashcards`);
+    };
+
     const onCreateDeck = () => {
         // Logic to create deck
         console.log("Create deck");
@@ -181,8 +186,12 @@ const WordDecks = () => {
                                     <p className="text-slate-600 text-sm leading-relaxed mb-6 line-clamp-2">{deck.description}</p>
                                     <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between">
                                         <LevelBadge level={deck.level} />
-                                        <button className="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-400 flex items-center justify-center shadow-sm group-hover:bg-indigo-600 group-hover:border-indigo-600 group-hover:text-white transition-all">
-                                            <ChevronRight size={20} />
+                                        <button
+                                            onClick={(e) => onStartFlashcards(e, deck)}
+                                            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm text-sm font-medium"
+                                        >
+                                            <Layers size={16} />
+                                            Flashcards
                                         </button>
                                     </div>
                                     {deck.progress > 0 && deck.progress < 100 && (

@@ -1,6 +1,7 @@
 import {
     ChevronLeft,
     Filter,
+    Layers,
     Search,
     Volume2
 } from 'lucide-react';
@@ -170,12 +171,21 @@ export default function WordDeckDetail() {
                 </button>
 
                 {/* Header Section */}
-                <div className="mb-8 flex items-center gap-4">
-                    <LevelBadge level={id} />
-                    <div>
-                        <h1 className="text-2xl font-bold text-slate-800 mb-1">{deckInfo?.title || `Level ${id}`}</h1>
-                        <p className="text-slate-500">{deckInfo?.wordCount || words.length} words in this deck</p>
+                <div className="mb-8 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <LevelBadge level={id} />
+                        <div>
+                            <h1 className="text-2xl font-bold text-slate-800 mb-1">{deckInfo?.title || `Level ${id}`}</h1>
+                            <p className="text-slate-500">{deckInfo?.wordCount || words.length} words in this deck</p>
+                        </div>
                     </div>
+                    <button
+                        onClick={() => navigate(`/learning/words/${id}/flashcards`)}
+                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
+                    >
+                        <Layers size={20} />
+                        Flashcards
+                    </button>
                 </div>
 
                 {/* Toolbar */}
