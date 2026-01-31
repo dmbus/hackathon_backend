@@ -1,6 +1,11 @@
 # Use an official Python runtime as a parent image
 FROM python:3.13-slim
 
+# Install system dependencies (FFmpeg for audio processing)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
