@@ -60,18 +60,10 @@ async def get_test_levels(
 ):
     """Get available CEFR levels with test question counts and user's best scores."""
     
-    # Try to find documents with either 'tests' or 'test' field
-    # First check which field name is used
-    count_tests = await db["words"].count_documents({"tests": {"$exists": True, "$type": "array", "$ne": []}})
-    count_test = await db["words"].count_documents({"test": {"$exists": True, "$type": "array", "$ne": []}})
-    
-    # Use the field that has data
-    test_field = "tests" if count_tests > 0 else "test"
-    
     # Aggregate words by cerf_level that have test questions
     pipeline = [
-        {"$match": {test_field: {"$exists": True, "$type": "array", "$ne": []}}},
-        {"$unwind": f"${test_field}"},
+        {"$match": {"tests": {"$exists": True, "$type": "array", "$ne": []}}},
+        {"$unwind": "$tests"},
         {
             "$group": {
                 "_id": "$cerf_level",
@@ -132,33 +124,23 @@ async def start_test(
 ):
     """Start a new test session for a specific CEFR level with 20 random questions."""
     
-    # Check which field name is used for tests
-    count_tests = await db["words"].count_documents({
-        "cerf_level": level, 
-        "tests": {"$exists": True, "$type": "array", "$ne": []}
-    })
-    count_test = await db["words"].count_documents({
-        "cerf_level": level, 
-        "test": {"$exists": True, "$type": "array", "$ne": []}
-    })
-    
-    test_field = "tests" if count_tests > 0 else "test"
-    
     # Fetch random questions from words at this level
+    # Options are stored as [{text: "...", is_correct: true/false}, ...] 
+    # We need to extract just the text values
     pipeline = [
-        {"$match": {"cerf_level": level, test_field: {"$exists": True, "$type": "array", "$ne": []}}},
-        {"$unwind": f"${test_field}"},
+        {"$match": {"cerf_level": level, "tests": {"$exists": True, "$type": "array", "$ne": []}}},
+        {"$unwind": "$tests"},
         {"$sample": {"size": QUESTIONS_PER_TEST}},
         {
             "$project": {
                 "word_id": {"$toString": "$_id"},
                 "word": "$word",
-                "question_type": f"${test_field}.question_type",
-                "question": f"${test_field}.question",
-                "options": f"${test_field}.options",
-                "correct_answer": f"${test_field}.correct_answer",
-                "explanation": f"${test_field}.explanation",
-                "difficulty": f"${test_field}.difficulty"
+                "question_type": "$tests.question_type",
+                "question": "$tests.question",
+                "options_raw": "$tests.options",
+                "correct_answer": "$tests.correct_answer",
+                "explanation": "$tests.explanation",
+                "difficulty": "$tests.difficulty"
             }
         }
     ]
@@ -167,12 +149,22 @@ async def start_test(
     questions = []
     
     async for doc in cursor:
+        # Extract option texts from the options array
+        # Options can be either strings or objects with 'text' field
+        options_raw = doc.get("options_raw", [])
+        if options_raw and isinstance(options_raw[0], dict):
+            # Options are objects like {text: "...", is_correct: true/false}
+            options = [opt.get("text", "") for opt in options_raw if isinstance(opt, dict)]
+        else:
+            # Options are already strings
+            options = options_raw if options_raw else []
+        
         questions.append(TestQuestion(
             word_id=doc["word_id"],
             word=doc.get("word", ""),
             question_type=doc.get("question_type", "meaning"),
             question=doc.get("question", ""),
-            options=doc.get("options", []),
+            options=options,
             correct_answer=doc.get("correct_answer", ""),
             explanation=doc.get("explanation", ""),
             difficulty=doc.get("difficulty", "easy"),
