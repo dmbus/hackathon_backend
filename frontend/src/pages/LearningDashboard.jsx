@@ -5,7 +5,6 @@ import {
     MoreHorizontal,
     Play,
     Star,
-    Trophy,
     Volume2
 } from 'lucide-react';
 import { useState } from 'react';
@@ -28,14 +27,6 @@ const SectionHeader = ({ overline, title }) => (
 const LearningDashboard = () => {
     const navigate = useNavigate();
     const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-
-    // Mock data for leaderboard
-    const leaderboard = [
-        { rank: 1, name: "Elena R.", xp: 12450, avatar: "ER" },
-        { rank: 2, name: "Marcus W.", xp: 11200, avatar: "MW" },
-        { rank: 3, name: "You", xp: 9840, avatar: "ME", highlighted: true },
-        { rank: 4, name: "Sarah J.", xp: 8700, avatar: "SJ" },
-    ];
 
     return (
         <>
@@ -131,36 +122,6 @@ const LearningDashboard = () => {
 
                 {/* Sidebar Stats Column */}
                 <div className="space-y-8">
-                    {/* Leaderboard Card */}
-                    <section>
-                        <SectionHeader overline="Ranking" title="Leaderboard" />
-                        <Card className="p-4">
-                            <div className="space-y-3">
-                                {leaderboard.map((user) => (
-                                    <div
-                                        key={user.rank}
-                                        className={`flex items-center gap-3 p-3 rounded-xl transition-colors ${user.highlighted ? 'bg-indigo-50 border border-indigo-100' : 'hover:bg-slate-50'}`}
-                                    >
-                                        <span className={`w-6 text-center font-bold ${user.rank <= 3 ? 'text-indigo-600' : 'text-slate-400'}`}>
-                                            {user.rank}
-                                        </span>
-                                        <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-600 text-sm">
-                                            {user.avatar}
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className={`font-bold text-sm ${user.highlighted ? 'text-indigo-900' : 'text-slate-800'}`}>{user.name}</p>
-                                            <p className="text-xs text-slate-500">{user.xp.toLocaleString()} XP</p>
-                                        </div>
-                                        {user.rank === 1 && <Trophy size={16} className="text-yellow-500" />}
-                                    </div>
-                                ))}
-                            </div>
-                            <button className="w-full mt-4 py-2 text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">
-                                View full rankings
-                            </button>
-                        </Card>
-                    </section>
-
                     {/* Subscription Status */}
                     <Card className="p-6 bg-slate-900 text-white relative overflow-hidden">
                         <div className="absolute -right-8 -top-8 w-32 h-32 bg-indigo-600 rounded-full blur-3xl opacity-30"></div>
