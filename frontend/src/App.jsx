@@ -14,6 +14,7 @@ import FlashcardsPage from './pages/FlashcardsPage';
 import ForSchoolsPage from './pages/ForSchoolsPage';
 import LandingPage from './pages/LandingPage';
 import LearningDashboard from './pages/LearningDashboard';
+import CreateListeningPage from './pages/CreateListeningPage';
 import LearningPage from './pages/LearningPage';
 import ListeningPage from './pages/ListeningPage';
 import LoginPage from './pages/LoginPage';
@@ -54,7 +55,7 @@ export default function App() {
         <Route path="/learning" element={<LearningPage />}>
           <Route index element={<LearningDashboard />} />
           <Route path="listening" element={<ListeningPage />} />
-          <Route path="listening/create" element={<CreatePodcastPage />} />
+          <Route path="listening/create" element={<CreateListeningPage />} />
           <Route path="listening/:id" element={<AudioPlayerPage />} />
           <Route path="speaking" element={<SpeakingListPage />} />
           <Route path="speaking/practice" element={<SpeakingPage />} />
