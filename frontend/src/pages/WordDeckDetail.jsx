@@ -1,17 +1,30 @@
 import {
-    BookOpen,
+    Book,
+    Briefcase,
     CheckCircle,
     ChevronLeft,
     ClipboardList,
+    Coffee,
     Lock,
+    Plane,
     Play,
     Plus,
+    Star,
     Trash2,
     Volume2
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { INITIAL_DECKS } from './WordDecks';
+import { wordService } from '../services/wordService';
+
+// --- Icon Mapping ---
+const ICON_MAP = {
+    "Coffee": Coffee,
+    "Briefcase": Briefcase,
+    "Plane": Plane,
+    "Star": Star,
+    "Book": Book
+};
 
 // --- Sub-Components ---
 
@@ -54,14 +67,60 @@ const SpacedRepetitionProgress = ({ level }) => {
 const WordDeckDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    // In a real app, fetch deck by ID. For now, find in INITIAL_DECKS.
-    // We need to use state if we want to add/remove words, so we initialize state with the found deck.
-    // Note: This won't persist across navigation in this mock version unless we used a global store or context.
-    const deckData = INITIAL_DECKS.find(d => d.id === parseInt(id));
 
-    const [deck, setDeck] = useState(deckData);
+    const [deck, setDeck] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [newWord, setNewWord] = useState({ original: '', translation: '' });
     const [isAdding, setIsAdding] = useState(false);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                // Fetch words for the level (id is the level, e.g., "A1")
+                const wordsData = await wordService.getWordsByLevel(id);
+
+                // For metadata, we need to fetch decks and find the matching one to get theme/desc
+                const decksData = await wordService.getDecks();
+                const deckMeta = decksData.find(d => d.id === id);
+
+                if (deckMeta) {
+                    setDeck({
+                        ...deckMeta,
+                        words: wordsData,
+                        icon: deckMeta.icon // Needs handling if it's a string, done below
+                    });
+                } else {
+                    // Fallback if deck not found in list (e.g. direct link to invalid level)
+                    setDeck({
+                        id: id,
+                        title: `Level ${id}`,
+                        description: `Words for level ${id}`,
+                        level: id,
+                        words: wordsData,
+                        theme: 'indigo',
+                        isCustom: false,
+                        progress: 0,
+                        icon: "Book"
+                    });
+                }
+            } catch (error) {
+                console.error("Failed to load deck", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [id]);
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            </div>
+        );
+    }
 
     if (!deck) {
         return <div className="p-8 text-center text-slate-500">Deck not found</div>;
@@ -105,7 +164,7 @@ const WordDeckDetail = () => {
         window.speechSynthesis.speak(utterance);
     };
 
-    const Icon = deck.icon;
+    const Icon = ICON_MAP[deck.icon] || Book;
 
     return (
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-20">
