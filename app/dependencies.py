@@ -3,7 +3,7 @@ from app.models.user import UserInDB
 from app.db.mongodb import get_database
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from app.services.firebase_auth import get_user_by_token
-from typing import List
+from typing import List, Optional
 
 async def get_current_user(
     authorization: str = Header(..., description="Bearer <token>"),
@@ -29,6 +29,34 @@ async def get_current_user(
         permissions=user_doc.get("permissions", []),
         created_at=user_doc.get("created_at")
     )
+
+async def get_optional_user(
+    authorization: Optional[str] = Header(None, description="Bearer <token>"),
+    db: AsyncIOMotorDatabase = Depends(get_database)
+) -> Optional[UserInDB]:
+    """Get the current user if authenticated, otherwise return None."""
+    if not authorization or not authorization.startswith("Bearer "):
+        return None
+    
+    try:
+        token = authorization.split(" ")[1]
+        firebase_user = await get_user_by_token(token)
+        user_id = firebase_user["localId"]
+        
+        user_doc = await db["user"].find_one({"_id": user_id})
+        if not user_doc:
+            return None
+            
+        return UserInDB(
+            id=user_doc["_id"],
+            email=user_doc["email"],
+            role=user_doc.get("role", "student_free"),
+            permissions=user_doc.get("permissions", []),
+            created_at=user_doc.get("created_at")
+        )
+    except Exception:
+        return None
+
 
 class RoleChecker:
     def __init__(self, allowed_roles: List[str]):

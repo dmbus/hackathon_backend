@@ -90,10 +90,27 @@ const TestPage = () => {
       setSelectedOption(null);
       setIsCorrect(null);
     } else {
-      // Submit the test
+      // Submit the test - include current answer since state might not be updated yet
       setSubmitting(true);
+      
+      // Build the complete answers array including the current answer
+      const currentQuestion = testSession.questions[currentIndex];
+      const allAnswers = [...answers];
+      
+      // Check if current answer is already in the array (avoid duplicates)
+      const currentAnswerExists = allAnswers.some(a => a.question_index === currentIndex);
+      if (!currentAnswerExists && selectedOption) {
+        allAnswers.push({
+          question_index: currentIndex,
+          word_id: currentQuestion.word_id,
+          question: currentQuestion.question,
+          selected_answer: selectedOption,
+          correct_answer: currentQuestion.correct_answer,
+        });
+      }
+      
       try {
-        const result = await testService.submitTest(level, answers);
+        const result = await testService.submitTest(level, allAnswers);
         setFinalResult(result);
         setIsFinished(true);
       } catch (err) {
