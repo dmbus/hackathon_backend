@@ -268,6 +268,28 @@ export default function AudioPlayerPage() {
         return { correct, total: podcast.quiz.length };
     }, [podcast, quizAnswers, showQuizResults]);
 
+    // Calculate active transcript line
+    const activeTranscriptIndex = useMemo(() => {
+        if (!podcast?.transcript) return -1;
+
+        // Find the segment matching the current time
+        // We use explicit start/end times if available
+        return podcast.transcript.findIndex(seg => {
+            if (seg.start_time === undefined || seg.end_time === undefined) return false;
+            return currentTime >= seg.start_time && currentTime < seg.end_time;
+        });
+    }, [currentTime, podcast]);
+
+    const handleTranscriptClick = (segment) => {
+        if (segment.start_time !== undefined && audioRef.current) {
+            audioRef.current.currentTime = segment.start_time;
+            if (!isPlaying) {
+                audioRef.current.play();
+                setIsPlaying(true);
+            }
+        }
+    };
+
     // Loading state
     if (isLoadingPodcast) {
         return (
@@ -336,8 +358,8 @@ export default function AudioPlayerPage() {
                 <button
                     onClick={() => setActiveTab('quiz')}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl shadow-md hover:scale-105 active:scale-95 transition-all font-bold text-sm ${activeTab === 'quiz'
-                            ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-                            : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                        ? 'bg-emerald-600 text-white hover:bg-emerald-700'
+                        : 'bg-indigo-600 text-white hover:bg-indigo-700'
                         }`}
                 >
                     <GraduationCap size={18} />
@@ -465,8 +487,8 @@ export default function AudioPlayerPage() {
                             <button
                                 onClick={() => setActiveTab('transcript')}
                                 className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all border ${activeTab === 'transcript'
-                                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-md transform scale-105'
-                                        : 'text-slate-500 bg-slate-50 hover:bg-slate-100 border-slate-100'
+                                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-md transform scale-105'
+                                    : 'text-slate-500 bg-slate-50 hover:bg-slate-100 border-slate-100'
                                     }`}
                             >
                                 TRANSCRIPT
@@ -474,8 +496,8 @@ export default function AudioPlayerPage() {
                             <button
                                 onClick={() => setActiveTab('quiz')}
                                 className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all border ${activeTab === 'quiz'
-                                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-md transform scale-105'
-                                        : 'text-slate-500 bg-slate-50 hover:bg-slate-100 border-slate-100'
+                                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-md transform scale-105'
+                                    : 'text-slate-500 bg-slate-50 hover:bg-slate-100 border-slate-100'
                                     }`}
                             >
                                 QUIZ
@@ -522,8 +544,8 @@ export default function AudioPlayerPage() {
                                         key={index}
                                         segment={segment}
                                         index={index}
-                                        isActive={false}
-                                        onClick={() => { }}
+                                        isActive={index === activeTranscriptIndex}
+                                        onClick={() => handleTranscriptClick(segment)}
                                     />
                                 ))}
                                 <div className="h-20 flex items-center justify-center text-slate-300 text-sm italic">
@@ -566,8 +588,8 @@ export default function AudioPlayerPage() {
                                 {/* Results Summary */}
                                 {showQuizResults && quizScore && (
                                     <div className={`mt-6 p-6 rounded-xl text-center ${quizScore.correct === quizScore.total
-                                            ? 'bg-emerald-50 border border-emerald-200'
-                                            : 'bg-indigo-50 border border-indigo-200'
+                                        ? 'bg-emerald-50 border border-emerald-200'
+                                        : 'bg-indigo-50 border border-indigo-200'
                                         }`}>
                                         <h4 className={`text-lg font-bold mb-2 ${quizScore.correct === quizScore.total ? 'text-emerald-700' : 'text-indigo-700'
                                             }`}>

@@ -46,6 +46,8 @@ PODCAST_CONTEXTS = [
 class ScriptLine(BaseModel):
     speaker: str = Field(description="The name of the speaker")
     text: str = Field(description="The spoken text in German")
+    start_time: Optional[float] = Field(default=None, description="Start time in seconds")
+    end_time: Optional[float] = Field(default=None, description="End time in seconds")
 
 
 class QuizQuestion(BaseModel):
