@@ -12,7 +12,7 @@ const Navbar = () => {
         { name: 'Pricing', path: '/pricing' },
         { name: 'Schools', path: '/schools' },
         { name: 'Resources', path: '/blog' },
-        { name: 'Downloads', path: '/downloads' },
+        { name: 'App', path: '/app' },
     ];
 
     const handleGetStarted = () => {
@@ -45,7 +45,6 @@ const Navbar = () => {
                     </div>
 
                     <div className="hidden md:flex items-center gap-4">
-                        <button onClick={() => navigate('/login')} className="text-slate-600 font-bold text-sm hover:text-indigo-600">Login</button>
                         <Button variant="primary" className="!px-6 !py-2.5 !text-sm" onClick={handleGetStarted}>
                             Get Started
                         </Button>
@@ -99,12 +98,6 @@ const Navbar = () => {
                             Contact
                         </NavLink>
                         <div className="pt-4 border-t border-slate-100 mt-4 flex flex-col gap-3">
-                            <button
-                                onClick={() => { navigate('/login'); setIsOpen(false); }}
-                                className="w-full text-center py-3 text-slate-600 font-bold border border-slate-200 rounded-xl"
-                            >
-                                Login
-                            </button>
                             <Button onClick={() => { handleGetStarted(); setIsOpen(false); }} className="w-full">
                                 Get Started
                             </Button>
