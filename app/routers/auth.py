@@ -33,7 +33,7 @@ async def register(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_data
     }
     
     # Using upsert=True just in case of retry/race conditions, though Firebase should handle uniqueness
-    await db["users"].update_one(
+    await db["user"].update_one(
         {"_id": user_doc["_id"]}, 
         {"$set": user_doc}, 
         upsert=True
@@ -62,7 +62,7 @@ async def firebase_login(request: FirebaseLoginRequest, db: AsyncIOMotorDatabase
     user_name = firebase_user.get("displayName")
     
     # Check if user exists
-    existing_user = await db["users"].find_one({"_id": user_id})
+    existing_user = await db["user"].find_one({"_id": user_id})
     
     if not existing_user:
         user_doc = {
@@ -73,7 +73,7 @@ async def firebase_login(request: FirebaseLoginRequest, db: AsyncIOMotorDatabase
             "permissions": ROLES_PERMISSIONS[UserRole.STUDENT_FREE],
             "created_at": datetime.utcnow()
         }
-        await db["users"].insert_one(user_doc)
+        await db["user"].insert_one(user_doc)
         return {"message": "User created", "user": user_doc}
     
     return {"message": "Login successful", "user": existing_user}

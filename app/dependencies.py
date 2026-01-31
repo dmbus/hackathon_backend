@@ -18,7 +18,7 @@ async def get_current_user(
     user_id = firebase_user["localId"]
     
     # Fetch from MongoDB
-    user_doc = await db["users"].find_one({"_id": user_id})
+    user_doc = await db["user"].find_one({"_id": user_id})
     if not user_doc:
         raise HTTPException(status_code=404, detail="User not found in database")
         
