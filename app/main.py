@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 import logging
 import time
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth, words, podcasts, audio, flashcards, speaking, tests
+from app.routers import auth, words, podcasts, audio, flashcards, speaking, tests, users
 from app.db.mongodb import close_mongo_connection
 from app.core.config import settings
 
@@ -50,6 +50,7 @@ app.add_middleware(
 )
 
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
+app.include_router(users.router, prefix="/users", tags=["users"])
 app.include_router(words.router, prefix="/words", tags=["words"])
 app.include_router(podcasts.router, prefix="/podcasts", tags=["podcasts"])
 app.include_router(audio.router, prefix="/audio", tags=["audio"])

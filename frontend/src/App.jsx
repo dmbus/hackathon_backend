@@ -31,6 +31,9 @@ import WordDecks from './pages/WordDecks';
 import TestListPage from './pages/TestListPage';
 import TestPage from './pages/TestPage';
 import TestSelectPage from './pages/TestSelectPage';
+import ProfilePage from './pages/ProfilePage';
+import SettingsPage from './pages/SettingsPage';
+import NotificationsPage from './pages/NotificationsPage';
 
 export default function App() {
   return (
@@ -76,6 +79,9 @@ export default function App() {
           <Route path="tests" element={<TestListPage />} />
           <Route path="tests/select" element={<TestSelectPage />} />
           <Route path="tests/:level" element={<TestPage />} />
+          <Route path="profile" element={<ProfilePage />} />
+          <Route path="settings" element={<SettingsPage />} />
+          <Route path="notifications" element={<NotificationsPage />} />
         </Route>
         </Routes>
       </Router>
