@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 import logging
 import time
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth, words, podcasts, audio, flashcards, speaking, tests, users
+from app.routers import auth, words, podcasts, audio, flashcards, speaking, tests, users, pronunciation
 from app.db.mongodb import close_mongo_connection
 from app.core.config import settings
 
@@ -67,6 +67,7 @@ app.include_router(audio.router, prefix="/audio", tags=["audio"])
 app.include_router(flashcards.router, prefix="/flashcards", tags=["flashcards"])
 app.include_router(speaking.router, prefix="/speaking", tags=["speaking"])
 app.include_router(tests.router, prefix="/tests", tags=["tests"])
+app.include_router(pronunciation.router, prefix="/pronunciation", tags=["pronunciation"])
 
 @app.on_event("shutdown")
 async def shutdown_db_client():

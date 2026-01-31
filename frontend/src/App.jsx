@@ -24,6 +24,9 @@ import PrivacyPage from './pages/PrivacyPage';
 import RecoveryPage from './pages/RecoveryPage';
 import SpeakingListPage from './pages/SpeakingListPage';
 import SpeakingPage from './pages/SpeakingPage';
+import PronunciationListPage from './pages/PronunciationListPage';
+import PronunciationModulePage from './pages/PronunciationModulePage';
+import PronunciationPracticePage from './pages/PronunciationPracticePage';
 import TermsPage from './pages/TermsPage';
 import WordDeckDetail from './pages/WordDeckDetail';
 import WordDecks from './pages/WordDecks';
@@ -71,6 +74,9 @@ export default function App() {
           <Route path="listening/:id" element={<AudioPlayerPage />} />
           <Route path="speaking" element={<SpeakingListPage />} />
           <Route path="speaking/practice" element={<SpeakingPage />} />
+          <Route path="pronunciation" element={<PronunciationListPage />} />
+          <Route path="pronunciation/:soundId" element={<PronunciationModulePage />} />
+          <Route path="pronunciation/:soundId/practice" element={<PronunciationPracticePage />} />
           <Route path="words" element={<WordDecks />} />
           <Route path="words/:id" element={<WordDeckDetail />} />
           <Route path="words/:id/flashcards" element={<FlashcardsPage />} />

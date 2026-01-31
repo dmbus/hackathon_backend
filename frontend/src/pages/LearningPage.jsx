@@ -13,6 +13,7 @@ import {
     Play,
     Settings,
     User as UserIcon,
+    Volume2,
     X
 } from 'lucide-react';
 import { useRef, useState, useEffect } from 'react';
@@ -211,6 +212,26 @@ const LearningPage = () => {
                 subtitle: 'Build confidence in your spoken language skills'
             };
         }
+
+        // Pronunciation pages
+        if (path.match(/^\/learning\/pronunciation\/[^/]+\/practice$/)) {
+            return {
+                title: 'Pronunciation Coach',
+                subtitle: 'Practice and get instant feedback on your pronunciation'
+            };
+        }
+        if (path.match(/^\/learning\/pronunciation\/[^/]+$/)) {
+            return {
+                title: 'Sound Module',
+                subtitle: 'Learn and practice this German sound'
+            };
+        }
+        if (path === '/learning/pronunciation') {
+            return {
+                title: 'Pronunciation',
+                subtitle: 'Master German sounds with phonetic training'
+            };
+        }
         
         // Words pages
         if (path.match(/^\/learning\/words\/[^/]+\/flashcards$/)) {
@@ -283,6 +304,7 @@ const LearningPage = () => {
                     <SidebarItem icon={LayoutDashboard} label="Dashboard" active={location.pathname === '/learning'} onClick={() => navigate('/learning')} />
                     <SidebarItem icon={BookOpen} label="Word Decks" active={location.pathname.startsWith('/learning/words')} onClick={() => navigate('/learning/words')} />
                     <SidebarItem icon={Mic2} label="Speaking" active={location.pathname.startsWith('/learning/speaking')} onClick={() => navigate('/learning/speaking')} />
+                    <SidebarItem icon={Volume2} label="Pronunciation" active={location.pathname.startsWith('/learning/pronunciation')} onClick={() => navigate('/learning/pronunciation')} />
                     <SidebarItem icon={Headphones} label="Listening" active={location.pathname.startsWith('/learning/listening')} onClick={() => navigate('/learning/listening')} />
                     <SidebarItem icon={ClipboardCheck} label="Tests" active={location.pathname.startsWith('/learning/tests')} onClick={() => navigate('/learning/tests')} />
                 </nav>
@@ -331,17 +353,23 @@ const LearningPage = () => {
                                 active={location.pathname.startsWith('/learning/words')} 
                                 onClick={() => { navigate('/learning/words'); setMobileMenuOpen(false); }} 
                             />
-                            <MobileNavItem 
-                                icon={Mic2} 
-                                label="Speaking" 
-                                active={location.pathname.startsWith('/learning/speaking')} 
-                                onClick={() => { navigate('/learning/speaking'); setMobileMenuOpen(false); }} 
+                            <MobileNavItem
+                                icon={Mic2}
+                                label="Speaking"
+                                active={location.pathname.startsWith('/learning/speaking')}
+                                onClick={() => { navigate('/learning/speaking'); setMobileMenuOpen(false); }}
                             />
-                            <MobileNavItem 
-                                icon={Headphones} 
-                                label="Listening" 
-                                active={location.pathname.startsWith('/learning/listening')} 
-                                onClick={() => { navigate('/learning/listening'); setMobileMenuOpen(false); }} 
+                            <MobileNavItem
+                                icon={Volume2}
+                                label="Pronunciation"
+                                active={location.pathname.startsWith('/learning/pronunciation')}
+                                onClick={() => { navigate('/learning/pronunciation'); setMobileMenuOpen(false); }}
+                            />
+                            <MobileNavItem
+                                icon={Headphones}
+                                label="Listening"
+                                active={location.pathname.startsWith('/learning/listening')}
+                                onClick={() => { navigate('/learning/listening'); setMobileMenuOpen(false); }}
                             />
                             <MobileNavItem 
                                 icon={ClipboardCheck} 
