@@ -9,61 +9,20 @@ import {
     RefreshCw,
     Square,
     Volume2,
-    Zap
+    Zap,
+    XCircle,
+    Loader2,
+    GraduationCap
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-// --- Mock Data for the simulation ---
-const QUESTION_DATA = {
-    category: "Travel & Lifestyle",
-    level: "Intermediate B1",
-    question: "Describe a memorable trip you took recently. Why was it special?",
-    tips: ["Use past tense verbs", "Include sensory details", "Mention who you were with"]
-};
-
-const FEEDBACK_DATA = {
-    overallScore: 82,
-    audioDuration: "00:45",
-    metrics: {
-        fluency: 85,
-        grammar: 78,
-        vocabulary: 88,
-        pronunciation: 80
-    },
-    transcript: "Last summer I go to Paris with my family. It was very beautiful city. We eated a lot of croissants and visit the Eiffel Tower at night.",
-    corrections: [
-        {
-            original: "Last summer I go to Paris",
-            correction: "Last summer I went to Paris",
-            type: "Grammar",
-            explanation: "Use past simple for completed actions in the past."
-        },
-        {
-            original: "We eated a lot",
-            correction: "We ate a lot",
-            type: "Grammar",
-            explanation: "'Eat' is an irregular verb."
-        },
-        {
-            original: "It was very beautiful city",
-            correction: "It was a very beautiful city",
-            type: "Grammar",
-            explanation: "Don't forget the article 'a' before singular noun phrases."
-        }
-    ],
-    vocabulary_suggestions: [
-        { word: "Beautiful", alternative: "Breathtaking / Picturesque" },
-        { word: "Big", alternative: "Massive / Colossal" }
-    ]
-};
+import { speakingService } from '../services/speakingService';
 
 // --- Helper Components ---
 
-const Button = ({ children, onClick, variant = 'primary', icon: Icon, className = '' }) => {
-    const baseStyles = "flex items-center justify-center gap-2 font-semibold transition-all duration-200 active:scale-95";
+const Button = ({ children, onClick, variant = 'primary', icon: Icon, className = '', disabled = false }) => {
+    const baseStyles = "flex items-center justify-center gap-2 font-semibold transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100";
 
-    // Design System: Action Buttons vs Icon Buttons
     const variants = {
         primary: "bg-indigo-600 hover:bg-indigo-700 text-white rounded-full px-8 py-4 shadow-lg shadow-indigo-200",
         secondary: "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-indigo-600 rounded-full px-6 py-3 shadow-sm hover:shadow-md",
@@ -72,7 +31,7 @@ const Button = ({ children, onClick, variant = 'primary', icon: Icon, className 
     };
 
     return (
-        <button onClick={onClick} className={`${baseStyles} ${variants[variant]} ${className}`}>
+        <button onClick={onClick} disabled={disabled} className={`${baseStyles} ${variants[variant]} ${className}`}>
             {Icon && <Icon size={20} />}
             {children}
         </button>
@@ -98,7 +57,8 @@ const Badge = ({ children, type = 'neutral' }) => {
     const colors = {
         neutral: "bg-slate-100 text-slate-600",
         indigo: "bg-indigo-50 text-indigo-600",
-        rose: "bg-rose-50 text-rose-600"
+        rose: "bg-rose-50 text-rose-600",
+        emerald: "bg-emerald-50 text-emerald-600"
     };
     return (
         <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${colors[type]}`}>
@@ -111,59 +71,192 @@ const Badge = ({ children, type = 'neutral' }) => {
 
 export default function SpeakingPage() {
     const navigate = useNavigate();
-    const [status, setStatus] = useState('idle'); // idle, recording, processing, feedback
+    
+    // State
+    const [status, setStatus] = useState('loading'); // loading, idle, recording, processing, feedback, error
     const [timeLeft, setTimeLeft] = useState(60);
     const [bars, setBars] = useState(Array(12).fill(10));
+    const [error, setError] = useState(null);
+    
+    // Practice session data
+    const [practiceData, setPracticeData] = useState(null);
+    const [analysisResult, setAnalysisResult] = useState(null);
+    
+    // Audio recording refs
+    const mediaRecorderRef = useRef(null);
+    const audioChunksRef = useRef([]);
+    const streamRef = useRef(null);
+    const analyserRef = useRef(null);
+    const animationFrameRef = useRef(null);
+
+    // Fetch practice session on mount
+    useEffect(() => {
+        fetchPracticeSession();
+    }, []);
+
+    const fetchPracticeSession = async () => {
+        setStatus('loading');
+        setError(null);
+        try {
+            const data = await speakingService.getPracticeSession();
+            setPracticeData(data);
+            setStatus('idle');
+        } catch (err) {
+            console.error('Failed to fetch practice session:', err);
+            setError(err.message || 'Failed to load practice session. Please try again.');
+            setStatus('error');
+        }
+    };
 
     // Timer Logic
     useEffect(() => {
         let interval;
         if (status === 'recording' && timeLeft > 0) {
             interval = setInterval(() => {
-                setTimeLeft((prev) => prev - 1);
-                // Animate audio bars randomly
-                setBars(bars.map(() => Math.floor(Math.random() * 40) + 10));
+                setTimeLeft((prev) => {
+                    if (prev <= 1) {
+                        finishRecording();
+                        return 0;
+                    }
+                    return prev - 1;
+                });
             }, 1000);
-        } else if (timeLeft === 0) {
-            finishRecording();
         }
         return () => clearInterval(interval);
     }, [status, timeLeft]);
 
-    // Simulated Audio Visualizer (Faster update for smooth visuals)
-    useEffect(() => {
-        let animationFrame;
-        if (status === 'recording') {
-            const animate = () => {
-                setBars(prev => prev.map(() => Math.max(10, Math.min(60, Math.random() * 60))));
-                animationFrame = requestAnimationFrame(animate);
-            };
-            // Slow down the animation slightly for visual comfort
-            const interval = setInterval(() => {
-                requestAnimationFrame(animate);
-            }, 100);
-            return () => {
-                cancelAnimationFrame(animationFrame);
-                clearInterval(interval);
-            };
+    // Real-time audio visualization using Web Audio API
+    const updateVisualization = useCallback(() => {
+        if (analyserRef.current && status === 'recording') {
+            const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
+            analyserRef.current.getByteFrequencyData(dataArray);
+            
+            // Sample 12 values from the frequency data
+            const step = Math.floor(dataArray.length / 12);
+            const newBars = Array(12).fill(0).map((_, i) => {
+                const value = dataArray[i * step];
+                return Math.max(10, Math.min(60, (value / 255) * 60));
+            });
+            setBars(newBars);
+            
+            animationFrameRef.current = requestAnimationFrame(updateVisualization);
         }
     }, [status]);
 
-    const startRecording = () => {
-        setStatus('recording');
-        setTimeLeft(60);
+    useEffect(() => {
+        if (status === 'recording') {
+            updateVisualization();
+        }
+        return () => {
+            if (animationFrameRef.current) {
+                cancelAnimationFrame(animationFrameRef.current);
+            }
+        };
+    }, [status, updateVisualization]);
+
+    const startRecording = async () => {
+        try {
+            // Request microphone access
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                audio: {
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    sampleRate: 44100
+                } 
+            });
+            streamRef.current = stream;
+
+            // Set up Web Audio API for visualization
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const source = audioContext.createMediaStreamSource(stream);
+            const analyser = audioContext.createAnalyser();
+            analyser.fftSize = 256;
+            source.connect(analyser);
+            analyserRef.current = analyser;
+
+            // Set up MediaRecorder
+            const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') 
+                ? 'audio/webm;codecs=opus' 
+                : 'audio/mp4';
+            
+            const mediaRecorder = new MediaRecorder(stream, { mimeType });
+            mediaRecorderRef.current = mediaRecorder;
+            audioChunksRef.current = [];
+
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                    audioChunksRef.current.push(event.data);
+                }
+            };
+
+            mediaRecorder.onstop = async () => {
+                // Stop all tracks
+                stream.getTracks().forEach(track => track.stop());
+                
+                // Create blob from chunks
+                const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
+                
+                // Submit for analysis
+                await submitRecording(audioBlob);
+            };
+
+            // Start recording
+            mediaRecorder.start(1000); // Collect data every second
+            setStatus('recording');
+            setTimeLeft(60);
+            setError(null);
+
+        } catch (err) {
+            console.error('Failed to start recording:', err);
+            if (err.name === 'NotAllowedError') {
+                setError('Microphone access denied. Please allow microphone access and try again.');
+            } else {
+                setError('Failed to start recording. Please check your microphone.');
+            }
+        }
     };
 
     const finishRecording = () => {
-        setStatus('processing');
-        setTimeout(() => {
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+            setStatus('processing');
+            mediaRecorderRef.current.stop();
+        }
+    };
+
+    const cancelRecording = () => {
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+            mediaRecorderRef.current.stop();
+        }
+        if (streamRef.current) {
+            streamRef.current.getTracks().forEach(track => track.stop());
+        }
+        setStatus('idle');
+        setTimeLeft(60);
+        audioChunksRef.current = [];
+    };
+
+    const submitRecording = async (audioBlob) => {
+        try {
+            const result = await speakingService.submitRecording(
+                audioBlob,
+                practiceData.question.text,
+                practiceData.targetWords
+            );
+            setAnalysisResult(result);
             setStatus('feedback');
-        }, 2500); // Simulate API delay
+        } catch (err) {
+            console.error('Failed to analyze recording:', err);
+            setError(err.message || 'Failed to analyze your recording. Please try again.');
+            setStatus('error');
+        }
     };
 
     const reset = () => {
-        setStatus('idle');
+        setStatus('loading');
+        setAnalysisResult(null);
         setTimeLeft(60);
+        setError(null);
+        fetchPracticeSession();
     };
 
     // --- Render Stages ---
@@ -175,9 +268,9 @@ export default function SpeakingPage() {
                     <ChevronRight size={16} className="rotate-180" /> Back to History
                 </button>
                 <div className="flex items-center gap-3 mb-2">
-                    <Badge type="indigo">{QUESTION_DATA.category}</Badge>
+                    <Badge type="indigo">Speaking Practice</Badge>
                     <span className="text-slate-400 text-sm font-semibold">•</span>
-                    <span className="text-slate-400 text-sm font-medium">{QUESTION_DATA.level}</span>
+                    <span className="text-slate-400 text-sm font-medium">Max 60 seconds</span>
                 </div>
                 <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-800">
                     Speaking Practice
@@ -191,37 +284,67 @@ export default function SpeakingPage() {
         </div>
     );
 
+    const renderLoading = () => (
+        <div className="py-20 flex flex-col items-center justify-center animate-in fade-in duration-500">
+            <Loader2 size={48} className="text-indigo-600 animate-spin mb-4" />
+            <h3 className="text-xl font-bold text-slate-800 mb-2">Loading Practice Session</h3>
+            <p className="text-slate-500">Preparing your question and vocabulary...</p>
+        </div>
+    );
+
+    const renderError = () => (
+        <div className="py-20 flex flex-col items-center justify-center animate-in fade-in duration-500">
+            <div className="bg-rose-100 p-4 rounded-full mb-4">
+                <XCircle size={48} className="text-rose-600" />
+            </div>
+            <h3 className="text-xl font-bold text-slate-800 mb-2">Something went wrong</h3>
+            <p className="text-slate-500 text-center max-w-md mb-6">{error}</p>
+            <Button onClick={reset} icon={RefreshCw}>Try Again</Button>
+        </div>
+    );
+
     const renderIdle = () => (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="bg-slate-50 rounded-xl p-8 mb-8 border border-slate-100">
                 <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-4">
-                    Today's Question
+                    Your Question
                 </h2>
                 <p className="text-2xl md:text-3xl font-medium text-slate-700 leading-relaxed">
-                    "{QUESTION_DATA.question}"
+                    "{practiceData?.question?.text}"
                 </p>
             </div>
 
             <div className="space-y-4 mb-10">
                 <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
                     <Zap size={16} className="text-indigo-500" />
-                    Quick Tips
+                    Target Words to Use
                 </h3>
-                <ul className="grid md:grid-cols-3 gap-4">
-                    {QUESTION_DATA.tips.map((tip, idx) => (
-                        <li key={idx} className="bg-white border border-slate-100 rounded-lg p-3 text-sm text-slate-600 shadow-sm flex items-start gap-2">
-                            <span className="bg-indigo-100 text-indigo-600 rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">
-                                {idx + 1}
-                            </span>
-                            {tip}
-                        </li>
+                <div className="flex flex-wrap gap-3">
+                    {practiceData?.targetWords?.map((word, idx) => (
+                        <div key={idx} className="bg-white border border-slate-200 rounded-lg px-4 py-3 shadow-sm">
+                            <div className="font-bold text-slate-800">{word.word}</div>
+                            <div className="text-sm text-slate-500">{word.translation}</div>
+                        </div>
                     ))}
-                </ul>
+                </div>
+            </div>
+
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-8">
+                <div className="flex items-start gap-3">
+                    <AlertCircle size={20} className="text-amber-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                        <p className="text-sm text-amber-800 font-medium">Recording Tips</p>
+                        <p className="text-sm text-amber-700 mt-1">
+                            Try to use all the target words naturally in your answer. 
+                            You have 60 seconds maximum. Speak clearly and at a natural pace.
+                        </p>
+                    </div>
+                </div>
             </div>
 
             <div className="flex justify-center">
                 <Button onClick={startRecording} icon={Mic} className="w-full md:w-auto min-w-[200px]">
-                    Start Answer
+                    Start Recording
                 </Button>
             </div>
         </div>
@@ -230,7 +353,6 @@ export default function SpeakingPage() {
     const renderRecording = () => (
         <div className="text-center py-8 animate-in zoom-in-95 duration-300">
             <div className="mb-8 relative inline-block">
-                {/* Pulsing rings */}
                 <div className="absolute inset-0 bg-indigo-100 rounded-full animate-ping opacity-75"></div>
                 <div className="relative bg-white p-6 rounded-full shadow-xl border border-indigo-50">
                     <Mic size={48} className="text-indigo-600" />
@@ -254,7 +376,7 @@ export default function SpeakingPage() {
             </div>
 
             <div className="flex justify-center gap-4">
-                <Button variant="danger" onClick={reset}>Cancel</Button>
+                <Button variant="danger" onClick={cancelRecording}>Cancel</Button>
                 <Button variant="primary" onClick={finishRecording} icon={Square}>Stop & Submit</Button>
             </div>
         </div>
@@ -267,133 +389,146 @@ export default function SpeakingPage() {
                 <div className="absolute inset-0 border-4 border-indigo-600 rounded-full border-t-transparent animate-spin"></div>
             </div>
             <h3 className="text-xl font-bold text-slate-800 mb-2">Analyzing Speech</h3>
-            <p className="text-slate-500">Checking grammar, pronunciation, and flow...</p>
+            <p className="text-slate-500">Transcribing and checking grammar, vocabulary, and usage...</p>
         </div>
     );
 
-    const renderFeedback = () => (
-        <div className="animate-in slide-in-from-bottom-8 duration-700">
-            {/* Score Header */}
-            <div className="bg-indigo-600 rounded-2xl p-6 text-white mb-8 shadow-lg shadow-indigo-200">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div className="flex items-center gap-6">
-                        <div className="relative w-20 h-20 flex items-center justify-center bg-indigo-500 rounded-full ring-4 ring-indigo-400/30">
-                            <span className="text-3xl font-extrabold tracking-tight">{FEEDBACK_DATA.overallScore}</span>
+    const renderFeedback = () => {
+        if (!analysisResult) return null;
+        
+        const { analysis, targetWords } = analysisResult;
+        
+        // Calculate metrics from word usage
+        const wordsUsed = analysis.wordUsage?.filter(w => w.isUsed).length || 0;
+        const wordsCorrect = analysis.wordUsage?.filter(w => w.isUsedCorrectly).length || 0;
+        const wordUsageScore = targetWords?.length > 0 ? Math.round((wordsCorrect / targetWords.length) * 100) : 0;
+        
+        return (
+            <div className="animate-in slide-in-from-bottom-8 duration-700">
+                {/* Score Header */}
+                <div className="bg-indigo-600 rounded-2xl p-6 text-white mb-8 shadow-lg shadow-indigo-200">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div className="flex items-center gap-6">
+                            <div className="relative w-20 h-20 flex items-center justify-center bg-indigo-500 rounded-full ring-4 ring-indigo-400/30">
+                                <span className="text-3xl font-extrabold tracking-tight">{analysis.score}</span>
+                            </div>
+                            <div>
+                                <h2 className="text-indigo-100 text-sm font-semibold uppercase tracking-wider mb-1">Overall Score</h2>
+                                <p className="text-2xl font-bold">
+                                    {analysis.score >= 80 ? 'Excellent!' : analysis.score >= 60 ? 'Good Job!' : 'Keep Practicing!'}
+                                </p>
+                                <Badge type="neutral">{analysis.cefrLevel}</Badge>
+                            </div>
                         </div>
-                        <div>
-                            <h2 className="text-indigo-100 text-sm font-semibold uppercase tracking-wider mb-1">Overall Score</h2>
-                            <p className="text-2xl font-bold">Great Job!</p>
-                        </div>
-                    </div>
-                    <div className="flex gap-3">
-                        <button className="p-3 bg-indigo-500/50 hover:bg-indigo-500 rounded-xl transition-colors backdrop-blur-sm">
-                            <Volume2 size={20} className="text-white" />
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-8 mb-8">
-                {/* Metrics Column */}
-                <div>
-                    <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-6 flex items-center gap-2">
-                        <BarChart3 size={16} /> Performance Metrics
-                    </h3>
-                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
-                        <ProgressBar label="Fluency & Coherence" value={FEEDBACK_DATA.metrics.fluency} colorClass="bg-emerald-500" />
-                        <ProgressBar label="Grammar Accuracy" value={FEEDBACK_DATA.metrics.grammar} colorClass="bg-blue-500" />
-                        <ProgressBar label="Vocabulary Range" value={FEEDBACK_DATA.metrics.vocabulary} colorClass="bg-violet-500" />
-                        <ProgressBar label="Pronunciation" value={FEEDBACK_DATA.metrics.pronunciation} colorClass="bg-amber-500" />
                     </div>
                 </div>
 
-                {/* Vocabulary Suggestions */}
-                <div>
+                {/* Word Usage Analysis */}
+                <div className="mb-8">
                     <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-6 flex items-center gap-2">
-                        <BookOpen size={16} /> Vocabulary Boost
+                        <BookOpen size={16} /> Target Word Usage ({wordsCorrect}/{targetWords?.length || 0} correct)
                     </h3>
-                    <div className="space-y-3">
-                        {FEEDBACK_DATA.vocabulary_suggestions.map((item, idx) => (
-                            <div key={idx} className="bg-white border border-slate-200 p-4 rounded-xl shadow-sm flex items-start gap-4">
-                                <div className="mt-1">
-                                    <Award size={20} className="text-amber-500" />
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {analysis.wordUsage?.map((wordAnalysis, idx) => (
+                            <div 
+                                key={idx} 
+                                className={`bg-white border rounded-xl p-4 shadow-sm ${
+                                    wordAnalysis.isUsedCorrectly 
+                                        ? 'border-emerald-200 bg-emerald-50/30' 
+                                        : wordAnalysis.isUsed 
+                                            ? 'border-amber-200 bg-amber-50/30'
+                                            : 'border-rose-200 bg-rose-50/30'
+                                }`}
+                            >
+                                <div className="flex items-start justify-between mb-2">
+                                    <span className="font-bold text-slate-800">{wordAnalysis.word}</span>
+                                    {wordAnalysis.isUsedCorrectly ? (
+                                        <CheckCircle2 size={20} className="text-emerald-500" />
+                                    ) : wordAnalysis.isUsed ? (
+                                        <AlertCircle size={20} className="text-amber-500" />
+                                    ) : (
+                                        <XCircle size={20} className="text-rose-500" />
+                                    )}
                                 </div>
-                                <div>
-                                    <div className="text-xs text-slate-400 mb-1 uppercase tracking-wider">Instead of "{item.word}"</div>
-                                    <div className="text-slate-700 font-semibold">{item.alternative}</div>
-                                </div>
+                                <p className="text-sm text-slate-600">{wordAnalysis.feedback}</p>
                             </div>
                         ))}
                     </div>
                 </div>
-            </div>
 
-            {/* Corrections Section */}
-            <div className="mb-10">
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-6 flex items-center gap-2">
-                    <CheckCircle2 size={16} /> Detailed Corrections
-                </h3>
-                <div className="space-y-4">
-                    {FEEDBACK_DATA.corrections.map((item, idx) => (
-                        <div key={idx} className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm group hover:shadow-md transition-shadow">
-                            <div className="flex flex-col md:flex-row">
-                                {/* Incorrect Side */}
-                                <div className="p-4 md:w-1/2 border-b md:border-b-0 md:border-r border-slate-100 bg-rose-50/30">
-                                    <div className="flex items-center gap-2 mb-2 text-rose-600 font-bold text-xs uppercase tracking-wide">
-                                        <AlertCircle size={14} /> You Said
-                                    </div>
-                                    <p className="text-slate-600 font-mono text-sm leading-relaxed relative">
-                                        {/* Simulating strikethrough effect for visual emphasis */}
-                                        <span className="line-through decoration-rose-400 decoration-2 opacity-70">{item.original}</span>
-                                    </p>
-                                </div>
-
-                                {/* Correct Side */}
-                                <div className="p-4 md:w-1/2 bg-indigo-50/30">
-                                    <div className="flex items-center gap-2 mb-2 text-indigo-600 font-bold text-xs uppercase tracking-wide">
-                                        <CheckCircle2 size={14} /> Better Choice
-                                    </div>
-                                    <p className="text-slate-800 font-medium text-sm leading-relaxed">
-                                        {item.correction}
-                                    </p>
-                                    <p className="mt-2 text-xs text-slate-500 italic">
-                                        Rule: {item.explanation}
-                                    </p>
-                                </div>
-                            </div>
+                {/* Transcription and Correction */}
+                <div className="grid md:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
+                            <Volume2 size={16} /> Your Transcription
+                        </h3>
+                        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                            <p className="text-slate-700 leading-relaxed">{analysis.transcription}</p>
                         </div>
-                    ))}
+                    </div>
+                    <div>
+                        <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
+                            <CheckCircle2 size={16} /> Corrected Version
+                        </h3>
+                        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
+                            <p className="text-slate-700 leading-relaxed">{analysis.correctedText}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* General Feedback */}
+                <div className="mb-10">
+                    <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
+                        <Award size={16} /> Feedback & Suggestions
+                    </h3>
+                    <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-6">
+                        <p className="text-slate-700 leading-relaxed">{analysis.generalFeedback}</p>
+                    </div>
+                </div>
+
+                {/* Metrics Summary */}
+                <div className="mb-10">
+                    <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-6 flex items-center gap-2">
+                        <BarChart3 size={16} /> Performance Summary
+                    </h3>
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <ProgressBar label="Overall Score" value={analysis.score} colorClass="bg-indigo-500" />
+                        <ProgressBar label="Target Word Usage" value={wordUsageScore} colorClass="bg-emerald-500" />
+                    </div>
+                </div>
+
+                {/* Footer Actions */}
+                <div className="flex justify-center gap-4 py-4 border-t border-slate-100">
+                    <Button variant="secondary" onClick={reset} icon={RefreshCw}>Try Another</Button>
+                    <Button variant="primary" onClick={() => navigate('/learning/speaking')} icon={ChevronRight}>View History</Button>
                 </div>
             </div>
-
-            {/* Footer Actions */}
-            <div className="flex justify-center gap-4 py-4 border-t border-slate-100">
-                <Button variant="secondary" onClick={reset} icon={RefreshCw}>Try Another</Button>
-                <Button variant="primary" onClick={() => alert("Moving to next lesson...")} icon={ChevronRight}>Next Lesson</Button>
-            </div>
-        </div>
-    );
+        );
+    };
 
     return (
         <div className="w-full max-w-3xl mx-auto bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden relative transition-all duration-500">
-
-            {/* Progress Bar (Top) - Only shown in recording/idle */}
-            {status !== 'feedback' && (
+            {/* Progress Bar (Top) */}
+            {status !== 'feedback' && status !== 'error' && (
                 <div className="h-1 bg-slate-100 w-full">
                     <div
                         className="h-full bg-indigo-600 transition-all duration-300"
                         style={{
-                            width: status === 'idle' ? '25%' : status === 'recording' ? '50%' : '75%'
+                            width: status === 'loading' ? '10%' : 
+                                   status === 'idle' ? '25%' : 
+                                   status === 'recording' ? '50%' : '75%'
                         }}
                     />
                 </div>
             )}
 
             <div className="p-6 md:p-10">
-                {status !== 'feedback' && renderHeader()}
+                {status !== 'feedback' && status !== 'loading' && status !== 'error' && renderHeader()}
 
                 <div className="min-h-[400px]">
-                    {status === 'idle' && renderIdle()}
+                    {status === 'loading' && renderLoading()}
+                    {status === 'error' && renderError()}
+                    {status === 'idle' && practiceData && renderIdle()}
                     {status === 'recording' && renderRecording()}
                     {status === 'processing' && renderProcessing()}
                     {status === 'feedback' && renderFeedback()}
