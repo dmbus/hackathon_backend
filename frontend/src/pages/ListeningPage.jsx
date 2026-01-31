@@ -127,12 +127,8 @@ export default function ListeningPage() {
         <div className="font-sans text-slate-900">
 
             <div className="max-w-6xl mx-auto">
-                {/* Header Section */}
-                <div className="mb-8 flex items-start justify-between">
-                    <div>
-                        <h1 className="text-2xl font-bold text-slate-800 mb-2">Audio Library</h1>
-                        <p className="text-slate-500">Manage your lessons and track your listening progress.</p>
-                    </div>
+                {/* Actions */}
+                <div className="mb-6 flex justify-end">
                     <button
                         onClick={handleCreateClick}
                         className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700 transition-colors shadow-md hover:shadow-lg"

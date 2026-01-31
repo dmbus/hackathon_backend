@@ -177,29 +177,6 @@ const DeckCard = ({ deck, onStartFlashcards }) => {
     );
 };
 
-const Header = () => (
-    <div className="mb-8 text-center md:text-left md:flex md:items-end md:justify-between">
-        <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-indigo-600 mb-2">
-                Language Learning
-            </h4>
-            <h1 className="font-extrabold tracking-tight text-slate-900 text-3xl md:text-4xl">
-                My Library
-            </h1>
-            <p className="mt-2 text-slate-500 max-w-lg">
-                Manage your collection of word decks. Filter by level or topic to find exactly what you need.
-            </p>
-        </div>
-
-        <div className="mt-6 md:mt-0 flex gap-3">
-            <button className="px-5 py-2.5 rounded-full bg-indigo-600 text-white font-semibold text-sm shadow-md hover:bg-indigo-700 transition-all active:scale-95 flex items-center gap-2">
-                <BookOpen size={16} />
-                Browse Store
-            </button>
-        </div>
-    </div>
-);
-
 // --- Main Page Component ---
 
 const DecksPage = () => {
@@ -229,10 +206,7 @@ const DecksPage = () => {
 
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-indigo-100 selection:text-indigo-700 pb-20">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
-
-                <Header />
-
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Fast Filters Section */}
                 <div className="mb-8 space-y-4">
 

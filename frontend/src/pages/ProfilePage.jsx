@@ -114,12 +114,6 @@ const ProfilePage = () => {
 
     return (
         <div className="max-w-4xl mx-auto space-y-8">
-            {/* Page Header */}
-            <div>
-                <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Profile</h1>
-                <p className="text-slate-500 mt-1">Manage your account information and subscription</p>
-            </div>
-
             {/* Profile Card */}
             <Card className="p-8">
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-6">

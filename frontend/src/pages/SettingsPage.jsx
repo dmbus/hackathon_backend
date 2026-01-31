@@ -95,12 +95,8 @@ const SettingsPage = () => {
 
     return (
         <div className="max-w-3xl mx-auto space-y-8">
-            {/* Page Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Settings</h1>
-                    <p className="text-slate-500 mt-1">Customize your learning experience</p>
-                </div>
+            {/* Save Button */}
+            <div className="flex justify-end">
                 <button
                     onClick={handleSave}
                     disabled={!hasChanges || saving}

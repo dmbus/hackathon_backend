@@ -126,6 +126,133 @@ const LearningPage = () => {
         return false;
     };
 
+    // Page headers configuration
+    const getPageHeader = () => {
+        const path = location.pathname;
+        
+        // Dashboard - show welcome message
+        if (path === '/learning') {
+            return {
+                title: `Welcome back${user?.displayName ? `, ${user.displayName.split(' ')[0]}` : ''}! 👋`,
+                subtitle: <>You've reached <span className="text-indigo-600 font-bold">65%</span> of your weekly goal.</>
+            };
+        }
+        
+        // Profile
+        if (path === '/learning/profile') {
+            return {
+                title: 'Profile',
+                subtitle: 'Manage your account information and subscription'
+            };
+        }
+        
+        // Settings
+        if (path === '/learning/settings') {
+            return {
+                title: 'Settings',
+                subtitle: 'Customize your learning experience and preferences'
+            };
+        }
+        
+        // Notifications
+        if (path === '/learning/notifications') {
+            return {
+                title: 'Notifications',
+                subtitle: 'Stay updated with your learning progress and reminders'
+            };
+        }
+        
+        // Listening pages
+        if (path === '/learning/listening/create') {
+            return {
+                title: 'Create Podcast',
+                subtitle: 'Generate a personalized podcast for your learning'
+            };
+        }
+        if (path.match(/^\/learning\/listening\/[^/]+$/)) {
+            return {
+                title: 'Audio Player',
+                subtitle: 'Listen and learn at your own pace'
+            };
+        }
+        if (path === '/learning/listening') {
+            return {
+                title: 'Listening Practice',
+                subtitle: 'Improve your comprehension with audio content'
+            };
+        }
+        
+        // Speaking pages
+        if (path === '/learning/speaking/practice') {
+            return {
+                title: 'Speaking Practice',
+                subtitle: 'Practice your pronunciation and fluency'
+            };
+        }
+        if (path === '/learning/speaking') {
+            return {
+                title: 'Speaking',
+                subtitle: 'Build confidence in your spoken language skills'
+            };
+        }
+        
+        // Words pages
+        if (path.match(/^\/learning\/words\/[^/]+\/flashcards$/)) {
+            return {
+                title: 'Flashcards',
+                subtitle: 'Review and memorize vocabulary with spaced repetition'
+            };
+        }
+        if (path.match(/^\/learning\/words\/[^/]+$/)) {
+            return {
+                title: 'Word Deck',
+                subtitle: 'Explore and learn vocabulary in this deck'
+            };
+        }
+        if (path === '/learning/words') {
+            return {
+                title: 'Word Decks',
+                subtitle: 'Expand your vocabulary with curated word collections'
+            };
+        }
+        
+        // Decks page
+        if (path === '/learning/decks') {
+            return {
+                title: 'My Decks',
+                subtitle: 'Manage your personal vocabulary collections'
+            };
+        }
+        
+        // Tests pages
+        if (path === '/learning/tests/select') {
+            return {
+                title: 'Select Test',
+                subtitle: 'Choose a test level to assess your knowledge'
+            };
+        }
+        if (path.match(/^\/learning\/tests\/[^/]+$/)) {
+            return {
+                title: 'Test',
+                subtitle: 'Assess your knowledge and track your progress'
+            };
+        }
+        if (path === '/learning/tests') {
+            return {
+                title: 'Tests',
+                subtitle: 'Evaluate your language proficiency with practice tests'
+            };
+        }
+        
+        // Default fallback
+        return {
+            title: 'Learning',
+            subtitle: 'Continue your language learning journey'
+        };
+    };
+
+    const pageHeader = getPageHeader();
+
     return (
         <div className="min-h-screen bg-slate-50 flex font-sans">
 
@@ -161,9 +288,9 @@ const LearningPage = () => {
                         </div>
                         <div>
                             <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
-                                Welcome back{user?.displayName ? `, ${user.displayName.split(' ')[0]}` : ''}! 👋
+                                {pageHeader.title}
                             </h1>
-                            <p className="text-slate-500 font-medium">You've reached <span className="text-indigo-600 font-bold">65%</span> of your weekly goal.</p>
+                            <p className="text-slate-500 font-medium">{pageHeader.subtitle}</p>
                         </div>
                     </div>
 

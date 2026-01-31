@@ -88,12 +88,8 @@ const TestListPage = () => {
 
   return (
     <div className="w-full max-w-4xl mx-auto animate-in fade-in duration-500">
-      {/* Page Header */}
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-800">Test Results</h1>
-          <p className="text-slate-500 mt-1">Track your vocabulary test progress</p>
-        </div>
+      {/* Actions */}
+      <div className="mb-8 flex justify-end">
         <button
           onClick={() => navigate('/learning/tests/select')}
           className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200 active:scale-95"

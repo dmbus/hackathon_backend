@@ -112,15 +112,7 @@ const WordDecks = () => {
     };
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-20">
-            <div className="mb-8 text-center md:text-left md:flex md:items-end md:justify-between">
-                <div>
-                    <h4 className="text-sm font-semibold uppercase tracking-wider text-indigo-600 mb-2">Language Learning</h4>
-                    <h1 className="font-extrabold tracking-tight text-slate-900 text-3xl md:text-4xl">My Library</h1>
-                    <p className="mt-2 text-slate-500 max-w-lg">Manage your collection of word decks.</p>
-                </div>
-            </div>
-
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
             {/* Filters */}
             <div className="mb-8 flex flex-col md:flex-row md:items-center gap-4">
                 <div className="flex items-center text-slate-400 text-sm font-semibold uppercase tracking-wider gap-2">

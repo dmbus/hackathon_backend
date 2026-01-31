@@ -160,17 +160,15 @@ export default function CreatePodcastPage() {
 
     return (
         <div className="font-sans text-slate-900 max-w-3xl mx-auto">
-            {/* Header */}
-            <div className="mb-8">
+            {/* Back Button */}
+            <div className="mb-6">
                 <button
                     onClick={() => navigate('/learning/listening')}
-                    className="flex items-center gap-2 text-slate-500 hover:text-slate-700 mb-4 transition-colors"
+                    className="flex items-center gap-2 text-slate-500 hover:text-slate-700 transition-colors"
                 >
                     <ArrowLeft size={18} />
                     <span className="text-sm font-medium">Back to Library</span>
                 </button>
-                <h1 className="text-2xl font-bold text-slate-800 mb-2">Create New Podcast</h1>
-                <p className="text-slate-500">Generate a personalized German learning podcast with AI.</p>
             </div>
 
             {/* Error Alert */}

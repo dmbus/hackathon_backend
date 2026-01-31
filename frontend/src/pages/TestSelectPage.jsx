@@ -102,20 +102,11 @@ const TestSelectPage = () => {
       {/* Back Button */}
       <button 
         onClick={() => navigate('/learning/tests')}
-        className="flex items-center gap-2 text-slate-500 hover:text-slate-700 mb-6 transition-colors"
+        className="flex items-center gap-2 text-slate-500 hover:text-slate-700 mb-8 transition-colors"
       >
         <ChevronLeft size={20} />
         <span className="font-medium">Back to Tests</span>
       </button>
-
-      {/* Header */}
-      <div className="text-center mb-10">
-        <div className="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <BookOpen className="text-indigo-600" size={32} />
-        </div>
-        <h1 className="text-3xl font-bold text-slate-800 mb-2">Select Your Level</h1>
-        <p className="text-slate-500">Choose a CEFR level to start your vocabulary test</p>
-      </div>
 
       {/* Level Selection Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">

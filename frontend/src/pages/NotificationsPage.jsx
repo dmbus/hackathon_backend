@@ -102,17 +102,9 @@ const NotificationsPage = () => {
 
     return (
         <div className="max-w-3xl mx-auto space-y-6">
-            {/* Page Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Notifications</h1>
-                    <p className="text-slate-500 mt-1">
-                        {unreadCount > 0 
-                            ? `You have ${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}`
-                            : 'All caught up!'}
-                    </p>
-                </div>
-                {unreadCount > 0 && (
+            {/* Actions */}
+            {unreadCount > 0 && (
+                <div className="flex justify-end">
                     <button
                         onClick={handleMarkAllRead}
                         className="flex items-center gap-2 px-4 py-2 text-indigo-600 hover:bg-indigo-50 rounded-xl font-medium transition-colors"
@@ -120,8 +112,8 @@ const NotificationsPage = () => {
                         <CheckCheck size={18} />
                         Mark all as read
                     </button>
-                )}
-            </div>
+                </div>
+            )}
 
             {error && (
                 <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">
