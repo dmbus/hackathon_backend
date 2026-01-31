@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 import logging
 import time
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth, words, podcasts, audio, flashcards, speaking
+from app.routers import auth, words, podcasts, audio, flashcards, speaking, tests
 from app.db.mongodb import close_mongo_connection
 from app.core.config import settings
 
@@ -55,6 +55,7 @@ app.include_router(podcasts.router, prefix="/podcasts", tags=["podcasts"])
 app.include_router(audio.router, prefix="/audio", tags=["audio"])
 app.include_router(flashcards.router, prefix="/flashcards", tags=["flashcards"])
 app.include_router(speaking.router, prefix="/speaking", tags=["speaking"])
+app.include_router(tests.router, prefix="/tests", tags=["tests"])
 
 @app.on_event("shutdown")
 async def shutdown_db_client():

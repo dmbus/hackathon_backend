@@ -26,6 +26,8 @@ import SpeakingPage from './pages/SpeakingPage';
 import TermsPage from './pages/TermsPage';
 import WordDeckDetail from './pages/WordDeckDetail';
 import WordDecks from './pages/WordDecks';
+import TestListPage from './pages/TestListPage';
+import TestPage from './pages/TestPage';
 
 export default function App() {
   return (
@@ -63,6 +65,8 @@ export default function App() {
           <Route path="words/:id" element={<WordDeckDetail />} />
           <Route path="words/:id/flashcards" element={<FlashcardsPage />} />
           <Route path="decks" element={<DecksPage />} />
+          <Route path="tests" element={<TestListPage />} />
+          <Route path="tests/:level" element={<TestPage />} />
         </Route>
       </Routes>
     </Router>

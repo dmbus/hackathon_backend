@@ -2,13 +2,13 @@ import {
     Bell,
     BookOpen,
     CheckCircle2,
+    ClipboardCheck,
     Flame,
     Headphones,
     LayoutDashboard,
     Mic2,
     Play,
-    Settings,
-    Trophy
+    Settings
 } from 'lucide-react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
@@ -53,7 +53,7 @@ const LearningPage = () => {
                     <SidebarItem icon={BookOpen} label="Word Decks" active={location.pathname.startsWith('/learning/words')} onClick={() => navigate('/learning/words')} />
                     <SidebarItem icon={Mic2} label="Speaking" active={location.pathname.startsWith('/learning/speaking')} onClick={() => navigate('/learning/speaking')} />
                     <SidebarItem icon={Headphones} label="Listening" active={location.pathname.startsWith('/learning/listening')} onClick={() => navigate('/learning/listening')} />
-                    <SidebarItem icon={Trophy} label="Leaderboard" active={location.pathname === '/learning/leaderboard'} onClick={() => navigate('/learning/leaderboard')} />
+                    <SidebarItem icon={ClipboardCheck} label="Tests" active={location.pathname.startsWith('/learning/tests')} onClick={() => navigate('/learning/tests')} />
                 </nav>
 
                 <div className="pt-6 border-t border-slate-100 space-y-2">
