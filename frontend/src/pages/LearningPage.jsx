@@ -402,9 +402,9 @@ const LearningPage = () => {
                             {/* Hamburger Menu Button - Mobile Only */}
                             <button
                                 onClick={() => setMobileMenuOpen(true)}
-                                className="p-2 rounded-lg hover:bg-slate-100 transition-colors lg:hidden"
+                                className="flex lg:hidden items-center justify-center p-2 rounded-lg hover:bg-slate-100 transition-colors"
                             >
-                                <Menu size={24} className="text-slate-700" />
+                                <Menu size={24} className="text-slate-600" />
                             </button>
                             {/* Logo - Mobile Only */}
                             <div className="lg:hidden flex items-center gap-2">

@@ -277,23 +277,45 @@ class PronunciationService:
     ) -> List[PhonemeError]:
         """
         Align phoneme sequences and identify errors.
-        Uses simple alignment for now.
+        Uses simple alignment with reasonable limits.
         """
         errors = []
-        max_len = max(len(target_phones), len(user_phones))
-
-        for i in range(max_len):
-            target = target_phones[i] if i < len(target_phones) else ""
-            user = user_phones[i] if i < len(user_phones) else ""
-
-            if target != user:
+        
+        # If sequences are identical, no errors
+        if target_phones == user_phones:
+            return errors
+        
+        # Simple alignment - compare up to min length first
+        min_len = min(len(target_phones), len(user_phones))
+        
+        for i in range(min_len):
+            if target_phones[i] != user_phones[i]:
                 errors.append(PhonemeError(
-                    target=target if target else "(missing)",
-                    produced=user if user else "(extra)",
+                    target=target_phones[i],
+                    produced=user_phones[i],
                     position=i
                 ))
-
-        return errors
+        
+        # Note extra or missing phonemes (but limit to avoid spam)
+        if len(target_phones) > len(user_phones):
+            missing = target_phones[min_len:]
+            if missing and len(errors) < 5:
+                errors.append(PhonemeError(
+                    target=" ".join(missing),
+                    produced="(missing sounds)",
+                    position=min_len
+                ))
+        elif len(user_phones) > len(target_phones):
+            extra = user_phones[min_len:]
+            if extra and len(errors) < 5:
+                errors.append(PhonemeError(
+                    target="(end of word)",
+                    produced=" ".join(extra) + " (extra sounds)",
+                    position=min_len
+                ))
+        
+        # Limit total errors to top 5 most important
+        return errors[:5]
 
     def calculate_phoneme_similarity(
         self,
@@ -444,14 +466,78 @@ Focus on practical mouth/tongue/lip positioning advice. Be encouraging but hones
 
         # 2. Transcribe user audio
         user_transcription = self.transcribe_audio(audio_bytes)
-
-        # 3. Get approximate IPA for user's pronunciation
-        # Since we're using STT, we compare transcription similarity
-        # For MVP, we use string matching on transcription
-        user_ipa = self._approximate_ipa_from_transcription(user_transcription, word)
-
-        # 4. Calculate similarity and find errors
-        score, phoneme_errors = self.calculate_phoneme_similarity(target_ipa, user_ipa)
+        
+        # Clean transcription for comparison
+        clean_transcription = user_transcription.strip().lower()
+        clean_transcription = ' '.join(clean_transcription.replace('.', '').replace(',', '').replace('?', '').replace('!', '').split())
+        target_word = word.strip().lower()
+        
+        # 3. Determine if pronunciation was correct based on transcription match
+        transcription_words = clean_transcription.split()
+        is_correct = (target_word == clean_transcription or target_word in transcription_words)
+        
+        # Check fuzzy match using edit distance (handles insertions/deletions)
+        def edit_distance_similarity(s1: str, s2: str) -> float:
+            """Calculate similarity using Levenshtein edit distance."""
+            if not s1 or not s2:
+                return 0.0
+            if s1 == s2:
+                return 1.0
+            
+            # Calculate edit distance
+            m, n = len(s1), len(s2)
+            dp = [[0] * (n + 1) for _ in range(m + 1)]
+            
+            for i in range(m + 1):
+                dp[i][0] = i
+            for j in range(n + 1):
+                dp[0][j] = j
+            
+            for i in range(1, m + 1):
+                for j in range(1, n + 1):
+                    if s1[i-1] == s2[j-1]:
+                        dp[i][j] = dp[i-1][j-1]
+                    else:
+                        dp[i][j] = 1 + min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])
+            
+            distance = dp[m][n]
+            max_len = max(m, n)
+            return 1.0 - (distance / max_len)
+        
+        if not is_correct:
+            best_similarity = max((edit_distance_similarity(w, target_word) for w in transcription_words), default=0.0)
+            is_close = best_similarity >= 0.6  # Lowered threshold for edit distance
+        else:
+            is_close = False
+            best_similarity = 1.0
+        
+        # 4. Set score and IPA based on match result
+        if is_correct:
+            # Perfect match - 100% score
+            score = 100.0
+            user_ipa = target_ipa
+            phoneme_errors = []
+            logger.info(f"Perfect match: '{clean_transcription}' == '{target_word}'")
+        elif is_close:
+            # Close match - partial score based on similarity
+            score = round(best_similarity * 100, 1)
+            user_ipa = target_ipa  # Use target IPA for display
+            phoneme_errors = [PhonemeError(
+                target=target_word,
+                produced=clean_transcription,
+                position=0
+            )]
+            logger.info(f"Close match: '{clean_transcription}' ~ '{target_word}' (score: {score})")
+        else:
+            # Mismatch - low score
+            score = round(best_similarity * 50, 1)  # Max 50% for wrong word
+            user_ipa = clean_transcription  # Show what was heard
+            phoneme_errors = [PhonemeError(
+                target=f"'{target_word}'",
+                produced=f"'{clean_transcription}'",
+                position=0
+            )]
+            logger.info(f"Mismatch: '{clean_transcription}' != '{target_word}' (score: {score})")
 
         # 5. Generate AI feedback
         feedback, tips = self.generate_feedback(
@@ -473,22 +559,67 @@ Focus on practical mouth/tongue/lip positioning advice. Be encouraging but hones
             articulatory_tips=tips
         )
 
-    def _approximate_ipa_from_transcription(self, transcription: str, target_word: str) -> str:
+    def _approximate_ipa_from_transcription(
+        self,
+        transcription: str,
+        target_word: str,
+        target_ipa: str
+    ) -> str:
         """
         Approximate IPA from transcription.
-        Uses simple heuristics to estimate pronunciation quality.
+        
+        Strategy:
+        1. If transcription matches target word -> return target IPA (correct pronunciation)
+        2. If transcription is different -> return target IPA but mark for lower scoring via text comparison
+        
+        This avoids complex IPA estimation and returns clean IPA that can be properly parsed.
         """
         # Clean up transcription
         transcription = transcription.strip().lower()
+        # Remove common punctuation and extra whitespace
+        transcription = ' '.join(transcription.replace('.', '').replace(',', '').replace('?', '').replace('!', '').split())
         target = target_word.strip().lower()
 
-        # If transcription matches target, assume correct IPA
-        if target in transcription:
-            # Return a "correct" placeholder - actual IPA would need G2P
-            return f"[match:{target}]"
+        logger.info(f"Comparing transcription '{transcription}' to target '{target}'")
 
-        # Otherwise, return the transcription as-is for comparison
-        return f"[heard:{transcription}]"
+        # Check if transcription matches or contains the target word
+        # This handles cases like "zehn" matching "zehn" or "zehn zehn" containing "zehn"
+        transcription_words = transcription.split()
+        
+        if target == transcription or target in transcription_words:
+            # Perfect match - user said the word correctly
+            logger.info(f"Transcription matches target word, using target IPA: {target_ipa}")
+            return target_ipa
+        
+        # Check for partial/fuzzy match (e.g., "zehen" vs "zehn" or common STT mistakes)
+        # Use simple character-level similarity
+        def simple_similarity(s1: str, s2: str) -> float:
+            if not s1 or not s2:
+                return 0.0
+            matches = sum(1 for a, b in zip(s1, s2) if a == b)
+            return matches / max(len(s1), len(s2))
+        
+        # Check each word in transcription against target
+        best_similarity = 0.0
+        for word in transcription_words:
+            sim = simple_similarity(word, target)
+            best_similarity = max(best_similarity, sim)
+        
+        if best_similarity >= 0.7:
+            # Close enough - treat as correct pronunciation with minor issues
+            logger.info(f"Transcription '{transcription}' is close to target '{target}' (similarity: {best_similarity:.2f})")
+            return target_ipa
+        
+        # Significant mismatch - user said something different
+        # Instead of trying to convert to IPA (which is error-prone), 
+        # return a modified IPA that will result in a lower score
+        # by adding a phoneme error marker
+        logger.info(f"Transcription '{transcription}' doesn't match target '{target}'")
+        
+        # Return an IPA that represents "incorrect" - this will be compared against target
+        # and generate appropriate errors. We use phonemes that are clearly different.
+        # This gives meaningful feedback rather than garbage character-by-character errors.
+        return "?"  # Single character that will clearly show as an error
 
 
 # Singleton instance
