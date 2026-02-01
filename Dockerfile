@@ -2,9 +2,11 @@
 FROM python:3.13-slim
 
 # Install system dependencies (FFmpeg for audio processing)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ffmpeg \
-    && rm -rf /var/lib/apt/lists/*
+RUN for i in 1 2 3; do \
+        apt-get update && apt-get install -y --no-install-recommends \
+        ffmpeg \
+        && rm -rf /var/lib/apt/lists/* && exit 0 || sleep 10; \
+    done; exit 1
 
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
